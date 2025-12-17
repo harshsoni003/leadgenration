@@ -32,6 +32,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Message {
   id: number;
@@ -50,8 +51,25 @@ interface Message {
   sentAt?: string;
 }
 
-const WEBHOOK_URL = "https://primary-production-bd72.up.railway.app/webhook/2848a75f-6836-4752-ad29-360a0f5964fb";
+async function sendEmailWebhook(email: string, message: string, leadName: string) {
+  try {
+    const { data, error } = await supabase.functions.invoke('send-webhook', {
+      body: { email, message, leadName },
+    });
 
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Webhook error:', error);
+    return { 
+      success: false, 
+      error: error instanceof Error ? error.message : 'Unknown error' 
+    };
+  }
+}
 const messages: Message[] = [
   {
     id: 1,
@@ -161,35 +179,6 @@ const getStatusBadge = (status: Message["status"]) => {
       return <Badge variant="destructive">Rejected</Badge>;
   }
 };
-
-async function sendEmailWebhook(email: string, message: string, leadName: string) {
-  try {
-    const response = await fetch(WEBHOOK_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email,
-        message,
-        leadName,
-        timestamp: new Date().toISOString(),
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Webhook failed: ${response.status}`);
-    }
-
-    return { success: true };
-  } catch (error) {
-    console.error('Webhook error:', error);
-    return { 
-      success: false, 
-      error: error instanceof Error ? error.message : 'Unknown error' 
-    };
-  }
-}
 
 export default function Messages() {
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
