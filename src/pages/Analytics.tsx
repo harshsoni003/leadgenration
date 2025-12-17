@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   DollarSign,
   TrendingUp,
@@ -6,42 +5,17 @@ import {
   Target,
   ArrowUpRight,
   ArrowDownRight,
-  Users,
   Zap,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
   ResponsiveContainer,
-  BarChart,
-  Bar,
   PieChart,
   Pie,
   Cell,
+  Tooltip,
 } from "recharts";
-
-const costData = [
-  { day: "Mon", cost: 0.078, leads: 78 },
-  { day: "Tue", cost: 0.085, leads: 85 },
-  { day: "Wed", cost: 0.092, leads: 92 },
-  { day: "Thu", cost: 0.088, leads: 88 },
-  { day: "Fri", cost: 0.095, leads: 95 },
-  { day: "Sat", cost: 0.062, leads: 62 },
-  { day: "Sun", cost: 0.050, leads: 50 },
-];
-
-const roiData = [
-  { month: "Jan", roi: 15400, value: 8500 },
-  { month: "Feb", roi: 18500, value: 10200 },
-  { month: "Mar", roi: 21400, value: 11800 },
-  { month: "Apr", roi: 25000, value: 13750 },
-];
 
 const timeBreakdown = [
   { name: "Research Saved", value: 85, color: "hsl(199 89% 48%)" },
@@ -150,93 +124,6 @@ export default function Analytics() {
                 <div className="p-3 rounded-xl bg-warning/10">
                   <Zap className="w-6 h-6 text-warning" />
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Charts Row */}
-        <div className="grid lg:grid-cols-2 gap-6">
-          {/* Cost & Leads Chart */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Daily Cost vs Leads Generated</CardTitle>
-              <CardDescription>This week's performance breakdown</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="h-[300px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={costData}>
-                    <defs>
-                      <linearGradient id="colorCost" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="hsl(199 89% 48%)" stopOpacity={0.3} />
-                        <stop offset="95%" stopColor="hsl(199 89% 48%)" stopOpacity={0} />
-                      </linearGradient>
-                      <linearGradient id="colorLeads" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="hsl(162 63% 41%)" stopOpacity={0.3} />
-                        <stop offset="95%" stopColor="hsl(162 63% 41%)" stopOpacity={0} />
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(220 13% 91%)" />
-                    <XAxis dataKey="day" stroke="hsl(220 9% 46%)" fontSize={12} />
-                    <YAxis stroke="hsl(220 9% 46%)" fontSize={12} />
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: "hsl(0 0% 100%)",
-                        border: "1px solid hsl(220 13% 91%)",
-                        borderRadius: "8px",
-                      }}
-                    />
-                    <Area
-                      type="monotone"
-                      dataKey="cost"
-                      stroke="hsl(199 89% 48%)"
-                      fill="url(#colorCost)"
-                      strokeWidth={2}
-                      name="Cost ($)"
-                    />
-                    <Area
-                      type="monotone"
-                      dataKey="leads"
-                      stroke="hsl(162 63% 41%)"
-                      fill="url(#colorLeads)"
-                      strokeWidth={2}
-                      name="Leads"
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* ROI Trend */}
-          <Card>
-            <CardHeader>
-              <CardTitle>ROI Growth Trend</CardTitle>
-              <CardDescription>Monthly ROI multiple progression</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="h-[300px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={roiData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(220 13% 91%)" />
-                    <XAxis dataKey="month" stroke="hsl(220 9% 46%)" fontSize={12} />
-                    <YAxis stroke="hsl(220 9% 46%)" fontSize={12} />
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: "hsl(0 0% 100%)",
-                        border: "1px solid hsl(220 13% 91%)",
-                        borderRadius: "8px",
-                      }}
-                    />
-                    <Bar
-                      dataKey="roi"
-                      fill="hsl(199 89% 48%)"
-                      radius={[4, 4, 0, 0]}
-                      name="ROI Multiple (x)"
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
               </div>
             </CardContent>
           </Card>
