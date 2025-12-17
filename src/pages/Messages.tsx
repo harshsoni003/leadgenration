@@ -7,6 +7,8 @@ import {
   Eye,
   RefreshCw,
   Search,
+  Mail,
+  Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -29,12 +31,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { toast } from "sonner";
 
 interface Message {
   id: number;
   leadName: string;
   leadTitle: string;
   company: string;
+  email: string;
   status: "draft" | "approved" | "sent" | "rejected" | "replied";
   content: string;
   context: {
@@ -46,12 +50,30 @@ interface Message {
   sentAt?: string;
 }
 
+const WEBHOOK_URL = "https://primary-production-bd72.up.railway.app/webhook/2848a75f-6836-4752-ad29-360a0f5964fb";
+
 const messages: Message[] = [
   {
     id: 1,
+    leadName: "Ayush Aryan Sinha",
+    leadTitle: "CEO",
+    company: "Dyota AI",
+    email: "ayush@dyotaai.com",
+    status: "draft",
+    content: "Hi Ayush, I noticed your impressive work at Dyota AI - the innovations in AI solutions are truly remarkable! As a leader driving cutting-edge technology, have you considered joining a peer advisory group? Vistage connects CEOs like yourself to share challenges and accelerate growth. Would love to share how it's helped similar tech leaders.",
+    context: {
+      followers: 15000,
+      recentTopic: "AI Innovation Summit",
+      score: 96,
+    },
+    createdAt: "1 hour ago",
+  },
+  {
+    id: 2,
     leadName: "Andrew L.",
     leadTitle: "CEO",
     company: "TechVentures Inc",
+    email: "andrew@techventures.com",
     status: "draft",
     content: "Hi Andrew, I noticed your recent keynote at the FinTech Summit - impressive insights on scaling fintech startups! As someone leading a company of 150+, have you considered joining a peer advisory group? Vistage connects CEOs like yourself to share challenges and accelerate growth. Would love to share how it's helped similar leaders in Philadelphia.",
     context: {
@@ -62,10 +84,11 @@ const messages: Message[] = [
     createdAt: "2 hours ago",
   },
   {
-    id: 2,
+    id: 3,
     leadName: "Sarah M.",
     leadTitle: "Founder & CEO",
     company: "FinanceFlow",
+    email: "sarah@financeflow.com",
     status: "sent",
     content: "Hi Sarah, Congratulations on FinanceFlow's growth - I saw your post about the leadership retreat last month. Building a company to 85 employees is no small feat! I work with Vistage, connecting high-growth CEOs in Philadelphia for confidential peer advisory. Many of our members have navigated similar scaling challenges. Interested in learning more?",
     context: {
@@ -77,10 +100,11 @@ const messages: Message[] = [
     sentAt: "Yesterday at 2:30 PM",
   },
   {
-    id: 3,
+    id: 4,
     leadName: "Robert P.",
     leadTitle: "Managing Director",
     company: "Investment Group",
+    email: "robert@investmentgroup.com",
     status: "replied",
     content: "Hi Robert, Your presentation at the Investment Summit was outstanding - particularly your views on alternative investments. With your track record leading a 180-person firm, I'd love to introduce you to Vistage. Our Philadelphia CEO groups are filled with leaders who'd value your perspective. Would a brief call work this week?",
     context: {
@@ -92,10 +116,11 @@ const messages: Message[] = [
     sentAt: "3 days ago",
   },
   {
-    id: 4,
+    id: 5,
     leadName: "Michael R.",
     leadTitle: "President",
     company: "Healthcare Plus",
+    email: "michael@healthcareplus.com",
     status: "approved",
     content: "Hi Michael, I came across your post about the Healthcare Innovation Conference - your take on patient-centered care resonated with me. Leading Healthcare Plus to 200+ employees shows real leadership. Have you explored peer advisory groups? Vistage has helped many healthcare executives navigate growth challenges. Happy to share more.",
     context: {
@@ -106,10 +131,11 @@ const messages: Message[] = [
     createdAt: "5 hours ago",
   },
   {
-    id: 5,
+    id: 6,
     leadName: "Emily C.",
     leadTitle: "Founder & CEO",
     company: "EdTech Innovate",
+    email: "emily@edtechinnovate.com",
     status: "rejected",
     content: "Hi Emily, I noticed your work in EdTech - impressive trajectory! Would love to connect about peer advisory groups for growing founders.",
     context: {
@@ -136,11 +162,41 @@ const getStatusBadge = (status: Message["status"]) => {
   }
 };
 
+async function sendEmailWebhook(email: string, message: string, leadName: string) {
+  try {
+    const response = await fetch(WEBHOOK_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email,
+        message,
+        leadName,
+        timestamp: new Date().toISOString(),
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Webhook failed: ${response.status}`);
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error('Webhook error:', error);
+    return { 
+      success: false, 
+      error: error instanceof Error ? error.message : 'Unknown error' 
+    };
+  }
+}
+
 export default function Messages() {
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
   const [editedContent, setEditedContent] = useState("");
   const [activeTab, setActiveTab] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [isSending, setIsSending] = useState(false);
 
   const openEditor = (message: Message) => {
     setSelectedMessage(message);
@@ -150,6 +206,25 @@ export default function Messages() {
   const closeEditor = () => {
     setSelectedMessage(null);
     setEditedContent("");
+  };
+
+  const handleSendEmail = async () => {
+    if (!selectedMessage) return;
+    
+    setIsSending(true);
+    const result = await sendEmailWebhook(
+      selectedMessage.email,
+      editedContent,
+      selectedMessage.leadName
+    );
+    setIsSending(false);
+
+    if (result.success) {
+      toast.success(`Email sent to ${selectedMessage.email}`);
+      closeEditor();
+    } else {
+      toast.error(`Failed to send email: ${result.error}`);
+    }
   };
 
   const filteredMessages = messages.filter((m) => {
@@ -289,7 +364,7 @@ export default function Messages() {
 
           {selectedMessage && (
             <div className="space-y-4">
-              <div className="flex gap-4 text-sm">
+              <div className="flex gap-4 text-sm flex-wrap">
                 <div className="px-3 py-2 rounded-md bg-muted">
                   <span className="text-muted-foreground">Score:</span>{" "}
                   <span className="font-medium">{selectedMessage.context.score}</span>
@@ -297,6 +372,10 @@ export default function Messages() {
                 <div className="px-3 py-2 rounded-md bg-muted">
                   <span className="text-muted-foreground">Topic:</span>{" "}
                   <span className="font-medium">{selectedMessage.context.recentTopic}</span>
+                </div>
+                <div className="px-3 py-2 rounded-md bg-primary/10">
+                  <span className="text-muted-foreground">Email:</span>{" "}
+                  <span className="font-medium text-primary">{selectedMessage.email}</span>
                 </div>
               </div>
 
@@ -311,7 +390,7 @@ export default function Messages() {
             </div>
           )}
 
-          <DialogFooter>
+          <DialogFooter className="gap-2 sm:gap-0">
             <Button variant="outline" onClick={closeEditor}>
               Cancel
             </Button>
@@ -322,6 +401,18 @@ export default function Messages() {
             <Button>
               <CheckCircle className="w-4 h-4 mr-1" />
               Approve
+            </Button>
+            <Button 
+              onClick={handleSendEmail} 
+              disabled={isSending}
+              className="bg-success hover:bg-success/90 text-success-foreground"
+            >
+              {isSending ? (
+                <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+              ) : (
+                <Mail className="w-4 h-4 mr-1" />
+              )}
+              Send Email
             </Button>
           </DialogFooter>
         </DialogContent>
