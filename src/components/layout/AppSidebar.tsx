@@ -6,6 +6,7 @@ import {
   Users,
   MessageSquare,
   Settings,
+  Linkedin,
 } from "lucide-react";
 import {
   Tooltip,
@@ -59,8 +60,8 @@ export default function AppSidebar() {
     <aside className="fixed left-0 top-0 z-50 flex h-screen w-16 flex-col bg-white border-r border-[#e5e7eb]">
       {/* Logo */}
       <div className="flex items-center justify-center h-16 border-b border-[#e5e7eb]">
-        <div className="w-8 h-8 rounded-lg bg-[#1a1a2e] flex items-center justify-center">
-          <span className="text-white font-semibold text-sm">L</span>
+        <div className="w-8 h-8 rounded-lg bg-[#0A66C2] flex items-center justify-center">
+          <Linkedin className="w-5 h-5 text-white" />
         </div>
       </div>
 
