@@ -27,20 +27,20 @@ import {
 } from "recharts";
 
 const costData = [
-  { day: "Mon", cost: 65, leads: 78 },
-  { day: "Tue", cost: 72, leads: 85 },
-  { day: "Wed", cost: 68, leads: 92 },
-  { day: "Thu", cost: 75, leads: 88 },
-  { day: "Fri", cost: 82, leads: 95 },
-  { day: "Sat", cost: 45, leads: 62 },
-  { day: "Sun", cost: 55, leads: 50 },
+  { day: "Mon", cost: 0.078, leads: 78 },
+  { day: "Tue", cost: 0.085, leads: 85 },
+  { day: "Wed", cost: 0.092, leads: 92 },
+  { day: "Thu", cost: 0.088, leads: 88 },
+  { day: "Fri", cost: 0.095, leads: 95 },
+  { day: "Sat", cost: 0.062, leads: 62 },
+  { day: "Sun", cost: 0.050, leads: 50 },
 ];
 
 const roiData = [
-  { month: "Jan", roi: 18, value: 8500 },
-  { month: "Feb", roi: 22, value: 10200 },
-  { month: "Mar", roi: 25, value: 11800 },
-  { month: "Apr", roi: 29, value: 13750 },
+  { month: "Jan", roi: 15400, value: 8500 },
+  { month: "Feb", roi: 18500, value: 10200 },
+  { month: "Mar", roi: 21400, value: 11800 },
+  { month: "Apr", roi: 25000, value: 13750 },
 ];
 
 const timeBreakdown = [
@@ -87,10 +87,10 @@ export default function Analytics() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground">Cost per Lead</p>
-                  <p className="text-3xl font-bold text-foreground">$0.85</p>
+                  <p className="text-3xl font-bold text-foreground">$0.001</p>
                   <div className="flex items-center gap-1 mt-1">
                     <ArrowDownRight className="w-4 h-4 text-success" />
-                    <span className="text-sm text-success">12% vs target</span>
+                    <span className="text-sm text-success">99% vs manual</span>
                   </div>
                 </div>
                 <div className="p-3 rounded-xl bg-primary/10">
@@ -105,10 +105,10 @@ export default function Analytics() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground">ROI Multiple</p>
-                  <p className="text-3xl font-bold text-foreground">29x</p>
+                  <p className="text-3xl font-bold text-foreground">25,000x</p>
                   <div className="flex items-center gap-1 mt-1">
                     <ArrowUpRight className="w-4 h-4 text-success" />
-                    <span className="text-sm text-success">+4x this month</span>
+                    <span className="text-sm text-success">vs manual cost</span>
                   </div>
                 </div>
                 <div className="p-3 rounded-xl bg-success/10">
@@ -368,8 +368,8 @@ export default function Analytics() {
 
               <div className="p-6 rounded-xl bg-success/5 border border-success/20">
                 <h4 className="font-medium text-success mb-2">AI Agent (Current)</h4>
-                <p className="text-3xl font-bold text-foreground mb-1">$467.50</p>
-                <p className="text-sm text-muted-foreground">$0.85 per lead</p>
+                <p className="text-3xl font-bold text-foreground mb-1">$0.55</p>
+                <p className="text-sm text-muted-foreground">$0.001 per lead</p>
                 <div className="mt-4 text-sm text-muted-foreground">
                   <p>• Instant processing</p>
                   <p>• Highly personalized</p>
