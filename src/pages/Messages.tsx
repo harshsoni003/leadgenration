@@ -5,16 +5,18 @@ import {
   XCircle,
   Edit3,
   Eye,
-  RefreshCw,
   Search,
   Mail,
   Loader2,
+  FileText,
+  Trash2,
+  Plus,
+  Upload,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Table,
   TableBody,
@@ -70,6 +72,7 @@ async function sendEmailWebhook(email: string, message: string, leadName: string
     };
   }
 }
+
 const messages: Message[] = [
   {
     id: 1,
@@ -78,13 +81,13 @@ const messages: Message[] = [
     company: "Dyota AI",
     email: "ayush@dyotaai.com",
     status: "draft",
-    content: "Hi Ayush, I noticed your impressive work at Dyota AI - the innovations in AI solutions are truly remarkable! As a leader driving cutting-edge technology, have you considered joining a peer advisory group? Vistage connects CEOs like yourself to share challenges and accelerate growth. Would love to share how it's helped similar tech leaders.",
+    content: "Hi Ayush, I noticed your impressive work at Dyota AI - the innovations in AI solutions are truly remarkable!",
     context: {
       followers: 15000,
       recentTopic: "AI Innovation Summit",
       score: 96,
     },
-    createdAt: "1 hour ago",
+    createdAt: "12/17/2025, 1:54 PM",
   },
   {
     id: 2,
@@ -92,14 +95,14 @@ const messages: Message[] = [
     leadTitle: "CEO",
     company: "TechVentures Inc",
     email: "andrew@techventures.com",
-    status: "draft",
-    content: "Hi Andrew, I noticed your recent keynote at the FinTech Summit - impressive insights on scaling fintech startups! As someone leading a company of 150+, have you considered joining a peer advisory group? Vistage connects CEOs like yourself to share challenges and accelerate growth. Would love to share how it's helped similar leaders in Philadelphia.",
+    status: "approved",
+    content: "Hi Andrew, I noticed your recent keynote at the FinTech Summit - impressive insights on scaling fintech startups!",
     context: {
       followers: 12500,
       recentTopic: "FinTech Summit keynote",
       score: 94,
     },
-    createdAt: "2 hours ago",
+    createdAt: "12/17/2025, 1:53 PM",
   },
   {
     id: 3,
@@ -108,13 +111,13 @@ const messages: Message[] = [
     company: "FinanceFlow",
     email: "sarah@financeflow.com",
     status: "sent",
-    content: "Hi Sarah, Congratulations on FinanceFlow's growth - I saw your post about the leadership retreat last month. Building a company to 85 employees is no small feat! I work with Vistage, connecting high-growth CEOs in Philadelphia for confidential peer advisory. Many of our members have navigated similar scaling challenges. Interested in learning more?",
+    content: "Hi Sarah, Congratulations on FinanceFlow's growth - I saw your post about the leadership retreat last month.",
     context: {
       followers: 8900,
       recentTopic: "Leadership retreat",
       score: 91,
     },
-    createdAt: "1 day ago",
+    createdAt: "11/11/2025, 5:31 AM",
     sentAt: "Yesterday at 2:30 PM",
   },
   {
@@ -124,13 +127,13 @@ const messages: Message[] = [
     company: "Investment Group",
     email: "robert@investmentgroup.com",
     status: "replied",
-    content: "Hi Robert, Your presentation at the Investment Summit was outstanding - particularly your views on alternative investments. With your track record leading a 180-person firm, I'd love to introduce you to Vistage. Our Philadelphia CEO groups are filled with leaders who'd value your perspective. Would a brief call work this week?",
+    content: "Hi Robert, Your presentation at the Investment Summit was outstanding.",
     context: {
       followers: 18500,
       recentTopic: "Investment Summit speaker",
       score: 96,
     },
-    createdAt: "3 days ago",
+    createdAt: "11/11/2025, 3:46 AM",
     sentAt: "3 days ago",
   },
   {
@@ -140,13 +143,13 @@ const messages: Message[] = [
     company: "Healthcare Plus",
     email: "michael@healthcareplus.com",
     status: "approved",
-    content: "Hi Michael, I came across your post about the Healthcare Innovation Conference - your take on patient-centered care resonated with me. Leading Healthcare Plus to 200+ employees shows real leadership. Have you explored peer advisory groups? Vistage has helped many healthcare executives navigate growth challenges. Happy to share more.",
+    content: "Hi Michael, I came across your post about the Healthcare Innovation Conference.",
     context: {
       followers: 15200,
       recentTopic: "Healthcare Innovation Conference",
       score: 88,
     },
-    createdAt: "5 hours ago",
+    createdAt: "11/11/2025, 1:00 AM",
   },
   {
     id: 6,
@@ -155,35 +158,52 @@ const messages: Message[] = [
     company: "EdTech Innovate",
     email: "emily@edtechinnovate.com",
     status: "rejected",
-    content: "Hi Emily, I noticed your work in EdTech - impressive trajectory! Would love to connect about peer advisory groups for growing founders.",
+    content: "Hi Emily, I noticed your work in EdTech - impressive trajectory!",
     context: {
       followers: 5100,
       recentTopic: "None detected",
       score: 72,
     },
-    createdAt: "1 week ago",
+    createdAt: "12/03/2025, 6:10 AM",
+  },
+  {
+    id: 7,
+    leadName: "David K.",
+    leadTitle: "CEO",
+    company: "CloudSync",
+    email: "david@cloudsync.com",
+    status: "draft",
+    content: "Hi David, Your cloud infrastructure solutions are impressive.",
+    context: {
+      followers: 9200,
+      recentTopic: "Cloud Summit",
+      score: 85,
+    },
+    createdAt: "11/11/2025, 9:55 PM",
   },
 ];
 
 const getStatusBadge = (status: Message["status"]) => {
   switch (status) {
     case "draft":
-      return <Badge variant="outline">Draft</Badge>;
+      return <Badge className="bg-muted text-muted-foreground border-0 font-normal text-xs px-2 py-0.5">draft</Badge>;
     case "approved":
-      return <Badge className="bg-primary/10 text-primary border-0">Ready</Badge>;
+      return <Badge className="bg-emerald-50 text-emerald-600 border-0 font-normal text-xs px-2 py-0.5">ready</Badge>;
     case "sent":
-      return <Badge className="bg-success/10 text-success border-0">Sent</Badge>;
+      return <Badge className="bg-emerald-50 text-emerald-600 border-0 font-normal text-xs px-2 py-0.5">sent</Badge>;
     case "replied":
-      return <Badge className="bg-accent/10 text-accent border-0">Replied</Badge>;
+      return <Badge className="bg-emerald-50 text-emerald-600 border-0 font-normal text-xs px-2 py-0.5">replied</Badge>;
     case "rejected":
-      return <Badge variant="destructive">Rejected</Badge>;
+      return <Badge className="bg-red-50 text-red-600 border-0 font-normal text-xs px-2 py-0.5">rejected</Badge>;
   }
 };
+
+type TabValue = "all" | "draft" | "approved" | "sent";
 
 export default function Messages() {
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
   const [editedContent, setEditedContent] = useState("");
-  const [activeTab, setActiveTab] = useState("all");
+  const [activeTab, setActiveTab] = useState<TabValue>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [isSending, setIsSending] = useState(false);
 
@@ -224,114 +244,123 @@ export default function Messages() {
     return matchesTab && matchesSearch;
   });
 
-  const counts = {
-    all: messages.length,
-    draft: messages.filter((m) => m.status === "draft").length,
-    approved: messages.filter((m) => m.status === "approved").length,
-    sent: messages.filter((m) => m.status === "sent").length,
-  };
+  const tabs: { value: TabValue; label: string }[] = [
+    { value: "all", label: "All" },
+    { value: "draft", label: "Drafts" },
+    { value: "approved", label: "Ready" },
+    { value: "sent", label: "Sent" },
+  ];
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-40">
-        <div className="px-6 py-4 flex items-center justify-between">
-          <div>
-            <h1 className="text-xl font-semibold text-foreground">Messages</h1>
-            <p className="text-sm text-muted-foreground">
-              Review and approve AI-generated outreach
-            </p>
-          </div>
-          <Button variant="outline" size="sm">
-            <RefreshCw className="w-4 h-4 mr-2" />
-            Generate Drafts
-          </Button>
-        </div>
-      </header>
-
-      <div className="p-6 space-y-4">
-        <div className="flex items-center justify-between gap-4">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1">
-            <TabsList>
-              <TabsTrigger value="all">All ({counts.all})</TabsTrigger>
-              <TabsTrigger value="draft">Drafts ({counts.draft})</TabsTrigger>
-              <TabsTrigger value="approved">Ready ({counts.approved})</TabsTrigger>
-              <TabsTrigger value="sent">Sent ({counts.sent})</TabsTrigger>
-            </TabsList>
-          </Tabs>
-          <div className="relative w-64">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input 
-              placeholder="Search..." 
-              className="pl-9 h-9" 
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
+      <div className="px-8 py-8">
+        {/* Header */}
+        <div className="mb-6">
+          <h1 className="text-2xl font-semibold text-foreground tracking-tight">Messages</h1>
+          <p className="text-muted-foreground text-sm mt-1">
+            Review and approve AI-generated outreach messages.
+          </p>
         </div>
 
-        <div className="border rounded-lg bg-card">
+        {/* Tabs and Search Row */}
+        <div className="flex items-center justify-between gap-4 mb-6">
+          <div className="flex items-center gap-1">
+            {tabs.map((tab) => (
+              <button
+                key={tab.value}
+                onClick={() => setActiveTab(tab.value)}
+                className={`px-4 py-1.5 text-sm font-medium rounded-full transition-colors ${
+                  activeTab === tab.value
+                    ? "bg-foreground text-background"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+          
+          <div className="flex items-center gap-3">
+            <div className="relative w-64">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input 
+                placeholder="Search messages..." 
+                className="pl-9 h-9 bg-background border-border rounded-lg text-sm" 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            <Button variant="outline" size="sm" className="h-9 px-4 text-sm font-medium">
+              <Plus className="w-4 h-4 mr-2" />
+              Add Message
+            </Button>
+            <Button size="sm" className="h-9 px-4 text-sm font-medium bg-foreground text-background hover:bg-foreground/90">
+              <Upload className="w-4 h-4 mr-2" />
+              Import Leads
+            </Button>
+          </div>
+        </div>
+
+        {/* Table */}
+        <div className="border border-border rounded-lg overflow-hidden">
           <Table>
             <TableHeader>
-              <TableRow>
-                <TableHead className="w-[200px]">Lead</TableHead>
-                <TableHead>Message Preview</TableHead>
-                <TableHead className="w-[80px] text-center">Score</TableHead>
-                <TableHead className="w-[100px]">Status</TableHead>
-                <TableHead className="w-[120px] text-right">Actions</TableHead>
+              <TableRow className="bg-background hover:bg-background border-b border-border">
+                <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wide py-3 px-4">Name</TableHead>
+                <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wide py-3 px-4">Preview</TableHead>
+                <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wide py-3 px-4">Company</TableHead>
+                <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wide py-3 px-4">Status</TableHead>
+                <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wide py-3 px-4">Date Created</TableHead>
+                <TableHead className="w-12"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredMessages.map((message) => (
-                <TableRow key={message.id}>
-                  <TableCell>
-                    <div>
-                      <p className="font-medium text-foreground">{message.leadName}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {message.leadTitle}, {message.company}
-                      </p>
+                <TableRow 
+                  key={message.id} 
+                  className="hover:bg-muted/30 cursor-pointer border-b border-border last:border-b-0"
+                  onClick={() => openEditor(message)}
+                >
+                  <TableCell className="py-4 px-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded bg-muted flex items-center justify-center">
+                        <FileText className="w-4 h-4 text-muted-foreground" />
+                      </div>
+                      <span className="font-medium text-foreground text-sm">{message.leadName}</span>
                     </div>
                   </TableCell>
-                  <TableCell>
-                    <p className="text-sm text-muted-foreground line-clamp-1">
+                  <TableCell className="py-4 px-4">
+                    <span className="text-muted-foreground text-sm line-clamp-1 max-w-xs">
                       {message.content}
-                    </p>
-                  </TableCell>
-                  <TableCell className="text-center">
-                    <span className={`font-medium ${message.context.score >= 90 ? 'text-success' : message.context.score >= 80 ? 'text-primary' : 'text-muted-foreground'}`}>
-                      {message.context.score}
                     </span>
                   </TableCell>
-                  <TableCell>{getStatusBadge(message.status)}</TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex items-center justify-end gap-1">
-                      {message.status === "draft" && (
-                        <>
-                          <Button size="icon" variant="ghost" onClick={() => openEditor(message)}>
-                            <Edit3 className="w-4 h-4" />
-                          </Button>
-                          <Button size="icon" variant="ghost" className="text-success hover:text-success">
-                            <CheckCircle className="w-4 h-4" />
-                          </Button>
-                        </>
-                      )}
-                      {message.status === "approved" && (
-                        <Button size="sm" variant="default">
-                          <Send className="w-3 h-3 mr-1" />
-                          Send
-                        </Button>
-                      )}
-                      {(message.status === "sent" || message.status === "replied") && (
-                        <Button size="icon" variant="ghost">
-                          <Eye className="w-4 h-4" />
-                        </Button>
-                      )}
-                    </div>
+                  <TableCell className="py-4 px-4">
+                    <span className="text-muted-foreground text-sm">
+                      {message.company}
+                    </span>
+                  </TableCell>
+                  <TableCell className="py-4 px-4">
+                    {getStatusBadge(message.status)}
+                  </TableCell>
+                  <TableCell className="py-4 px-4">
+                    <span className="text-muted-foreground text-sm">{message.createdAt}</span>
+                  </TableCell>
+                  <TableCell className="py-4 px-4">
+                    <button 
+                      className="text-muted-foreground hover:text-foreground transition-colors p-1"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toast.info("Delete functionality coming soon");
+                      }}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
                   </TableCell>
                 </TableRow>
               ))}
               {filteredMessages.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
+                  <TableCell colSpan={6} className="text-center py-12 text-muted-foreground">
                     No messages found
                   </TableCell>
                 </TableRow>
@@ -394,7 +423,7 @@ export default function Messages() {
             <Button 
               onClick={handleSendEmail} 
               disabled={isSending}
-              className="bg-success hover:bg-success/90 text-success-foreground"
+              className="bg-emerald-600 hover:bg-emerald-700 text-background"
             >
               {isSending ? (
                 <Loader2 className="w-4 h-4 mr-1 animate-spin" />
