@@ -2,8 +2,6 @@ import { useLocation, Link } from "react-router-dom";
 import {
   LayoutDashboard,
   BarChart3,
-  Megaphone,
-  Users,
   MessageSquare,
   Settings,
   Linkedin,
@@ -18,8 +16,6 @@ import { cn } from "@/lib/utils";
 const navItems = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/" },
   { icon: BarChart3, label: "Analytics", path: "/analytics" },
-  { icon: Megaphone, label: "Campaigns", path: "/campaigns" },
-  { icon: Users, label: "Leads", path: "/leads" },
   { icon: MessageSquare, label: "Messages", path: "/messages" },
 ];
 
