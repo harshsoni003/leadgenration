@@ -1,27 +1,26 @@
 import { useState } from "react";
 import {
-  MessageSquare,
   Send,
-  Clock,
   CheckCircle,
   XCircle,
   Edit3,
   Eye,
   RefreshCw,
-  Sparkles,
-  User,
-  Calendar,
-  ThumbsUp,
-  ThumbsDown,
-  Filter,
   Search,
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import {
   Dialog,
   DialogContent,
@@ -122,18 +121,18 @@ const messages: Message[] = [
   },
 ];
 
-const getStatusConfig = (status: Message["status"]) => {
+const getStatusBadge = (status: Message["status"]) => {
   switch (status) {
     case "draft":
-      return { label: "Draft", color: "bg-muted text-muted-foreground", icon: Edit3 };
+      return <Badge variant="outline">Draft</Badge>;
     case "approved":
-      return { label: "Ready to Send", color: "bg-primary/10 text-primary", icon: CheckCircle };
+      return <Badge className="bg-primary/10 text-primary border-0">Ready</Badge>;
     case "sent":
-      return { label: "Sent", color: "bg-success/10 text-success", icon: Send };
+      return <Badge className="bg-success/10 text-success border-0">Sent</Badge>;
     case "replied":
-      return { label: "Replied", color: "bg-accent/10 text-accent", icon: MessageSquare };
+      return <Badge className="bg-accent/10 text-accent border-0">Replied</Badge>;
     case "rejected":
-      return { label: "Rejected", color: "bg-destructive/10 text-destructive", icon: XCircle };
+      return <Badge variant="destructive">Rejected</Badge>;
   }
 };
 
@@ -141,6 +140,7 @@ export default function Messages() {
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
   const [editedContent, setEditedContent] = useState("");
   const [activeTab, setActiveTab] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const openEditor = (message: Message) => {
     setSelectedMessage(message);
@@ -152,269 +152,162 @@ export default function Messages() {
     setEditedContent("");
   };
 
-  const stats = {
-    drafts: messages.filter((m) => m.status === "draft").length,
+  const filteredMessages = messages.filter((m) => {
+    const matchesTab = activeTab === "all" || m.status === activeTab;
+    const matchesSearch = 
+      m.leadName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      m.company.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesTab && matchesSearch;
+  });
+
+  const counts = {
+    all: messages.length,
+    draft: messages.filter((m) => m.status === "draft").length,
     approved: messages.filter((m) => m.status === "approved").length,
     sent: messages.filter((m) => m.status === "sent").length,
-    replied: messages.filter((m) => m.status === "replied").length,
   };
-
-  const filteredMessages =
-    activeTab === "all"
-      ? messages
-      : messages.filter((m) => m.status === activeTab);
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-40">
-        <div className="px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-semibold text-foreground">Message Center</h1>
-              <p className="text-sm text-muted-foreground">
-                Review and approve AI-generated personalized messages
-              </p>
-            </div>
-            <div className="flex items-center gap-3">
-              <Button variant="outline" className="gap-2">
-                <RefreshCw className="w-4 h-4" />
-                Generate New Drafts
-              </Button>
-            </div>
+        <div className="px-6 py-4 flex items-center justify-between">
+          <div>
+            <h1 className="text-xl font-semibold text-foreground">Messages</h1>
+            <p className="text-sm text-muted-foreground">
+              Review and approve AI-generated outreach
+            </p>
           </div>
+          <Button variant="outline" size="sm">
+            <RefreshCw className="w-4 h-4 mr-2" />
+            Generate Drafts
+          </Button>
         </div>
       </header>
 
-      <div className="p-6 space-y-6">
-        {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Card className="cursor-pointer hover:border-muted-foreground/30 transition-colors" onClick={() => setActiveTab("draft")}>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-muted">
-                  <Edit3 className="w-5 h-5 text-muted-foreground" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold">{stats.drafts}</p>
-                  <p className="text-sm text-muted-foreground">Drafts</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="cursor-pointer hover:border-muted-foreground/30 transition-colors" onClick={() => setActiveTab("approved")}>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-primary/10">
-                  <CheckCircle className="w-5 h-5 text-primary" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-primary">{stats.approved}</p>
-                  <p className="text-sm text-muted-foreground">Ready to Send</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="cursor-pointer hover:border-muted-foreground/30 transition-colors" onClick={() => setActiveTab("sent")}>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-success/10">
-                  <Send className="w-5 h-5 text-success" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-success">{stats.sent}</p>
-                  <p className="text-sm text-muted-foreground">Sent</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="cursor-pointer hover:border-muted-foreground/30 transition-colors" onClick={() => setActiveTab("replied")}>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-accent/10">
-                  <MessageSquare className="w-5 h-5 text-accent" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-accent">{stats.replied}</p>
-                  <p className="text-sm text-muted-foreground">Replied</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+      <div className="p-6 space-y-4">
+        <div className="flex items-center justify-between gap-4">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1">
+            <TabsList>
+              <TabsTrigger value="all">All ({counts.all})</TabsTrigger>
+              <TabsTrigger value="draft">Drafts ({counts.draft})</TabsTrigger>
+              <TabsTrigger value="approved">Ready ({counts.approved})</TabsTrigger>
+              <TabsTrigger value="sent">Sent ({counts.sent})</TabsTrigger>
+            </TabsList>
+          </Tabs>
+          <div className="relative w-64">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input 
+              placeholder="Search..." 
+              className="pl-9 h-9" 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
         </div>
 
-        {/* Tabs & Messages */}
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <div className="flex items-center justify-between mb-4">
-            <TabsList>
-              <TabsTrigger value="all">All Messages</TabsTrigger>
-              <TabsTrigger value="draft">Drafts</TabsTrigger>
-              <TabsTrigger value="approved">Approved</TabsTrigger>
-              <TabsTrigger value="sent">Sent</TabsTrigger>
-              <TabsTrigger value="replied">Replied</TabsTrigger>
-            </TabsList>
-            <div className="relative w-64">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input placeholder="Search messages..." className="pl-10" />
-            </div>
-          </div>
-
-          <TabsContent value={activeTab} className="mt-0">
-            <div className="space-y-4">
-              {filteredMessages.map((message) => {
-                const statusConfig = getStatusConfig(message.status);
-                const StatusIcon = statusConfig.icon;
-
-                return (
-                  <Card key={message.id} className="hover:border-muted-foreground/30 transition-colors">
-                    <CardContent className="p-6">
-                      <div className="flex items-start gap-4">
-                        {/* Avatar */}
-                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-primary-foreground font-semibold flex-shrink-0">
-                          {message.leadName.split(" ").map((n) => n[0]).join("")}
-                        </div>
-
-                        {/* Content */}
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between mb-2">
-                            <div>
-                              <h4 className="font-medium text-foreground">
-                                {message.leadName}
-                              </h4>
-                              <p className="text-sm text-muted-foreground">
-                                {message.leadTitle} at {message.company}
-                              </p>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Badge className={statusConfig.color}>
-                                <StatusIcon className="w-3 h-3 mr-1" />
-                                {statusConfig.label}
-                              </Badge>
-                            </div>
-                          </div>
-
-                          {/* Message Preview */}
-                          <p className="text-sm text-foreground/80 line-clamp-2 mb-3">
-                            {message.content}
-                          </p>
-
-                          {/* Context & Actions */}
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                              <span className="flex items-center gap-1">
-                                <User className="w-3 h-3" />
-                                {(message.context.followers / 1000).toFixed(1)}k followers
-                              </span>
-                              <span className="flex items-center gap-1">
-                                <Sparkles className="w-3 h-3" />
-                                Score: {message.context.score}
-                              </span>
-                              <span className="flex items-center gap-1">
-                                <Calendar className="w-3 h-3" />
-                                {message.createdAt}
-                              </span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              {message.status === "draft" && (
-                                <>
-                                  <Button
-                                    size="sm"
-                                    variant="outline"
-                                    onClick={() => openEditor(message)}
-                                  >
-                                    <Edit3 className="w-4 h-4 mr-1" />
-                                    Edit
-                                  </Button>
-                                  <Button size="sm" variant="destructive" className="gap-1">
-                                    <ThumbsDown className="w-4 h-4" />
-                                    Reject
-                                  </Button>
-                                  <Button size="sm" className="gap-1">
-                                    <ThumbsUp className="w-4 h-4" />
-                                    Approve
-                                  </Button>
-                                </>
-                              )}
-                              {message.status === "approved" && (
-                                <>
-                                  <Button
-                                    size="sm"
-                                    variant="outline"
-                                    onClick={() => openEditor(message)}
-                                  >
-                                    <Edit3 className="w-4 h-4 mr-1" />
-                                    Edit
-                                  </Button>
-                                  <Button size="sm" className="gap-1">
-                                    <Send className="w-4 h-4" />
-                                    Send Now
-                                  </Button>
-                                </>
-                              )}
-                              {(message.status === "sent" || message.status === "replied") && (
-                                <Button size="sm" variant="outline">
-                                  <Eye className="w-4 h-4 mr-1" />
-                                  View Thread
-                                </Button>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
-          </TabsContent>
-        </Tabs>
+        <div className="border rounded-lg bg-card">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[200px]">Lead</TableHead>
+                <TableHead>Message Preview</TableHead>
+                <TableHead className="w-[80px] text-center">Score</TableHead>
+                <TableHead className="w-[100px]">Status</TableHead>
+                <TableHead className="w-[120px] text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredMessages.map((message) => (
+                <TableRow key={message.id}>
+                  <TableCell>
+                    <div>
+                      <p className="font-medium text-foreground">{message.leadName}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {message.leadTitle}, {message.company}
+                      </p>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <p className="text-sm text-muted-foreground line-clamp-1">
+                      {message.content}
+                    </p>
+                  </TableCell>
+                  <TableCell className="text-center">
+                    <span className={`font-medium ${message.context.score >= 90 ? 'text-success' : message.context.score >= 80 ? 'text-primary' : 'text-muted-foreground'}`}>
+                      {message.context.score}
+                    </span>
+                  </TableCell>
+                  <TableCell>{getStatusBadge(message.status)}</TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex items-center justify-end gap-1">
+                      {message.status === "draft" && (
+                        <>
+                          <Button size="icon" variant="ghost" onClick={() => openEditor(message)}>
+                            <Edit3 className="w-4 h-4" />
+                          </Button>
+                          <Button size="icon" variant="ghost" className="text-success hover:text-success">
+                            <CheckCircle className="w-4 h-4" />
+                          </Button>
+                        </>
+                      )}
+                      {message.status === "approved" && (
+                        <Button size="sm" variant="default">
+                          <Send className="w-3 h-3 mr-1" />
+                          Send
+                        </Button>
+                      )}
+                      {(message.status === "sent" || message.status === "replied") && (
+                        <Button size="icon" variant="ghost">
+                          <Eye className="w-4 h-4" />
+                        </Button>
+                      )}
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+              {filteredMessages.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
+                    No messages found
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </div>
 
       {/* Edit Modal */}
       <Dialog open={!!selectedMessage} onOpenChange={() => closeEditor()}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-xl">
           <DialogHeader>
-            <DialogTitle>Edit Message for {selectedMessage?.leadName}</DialogTitle>
+            <DialogTitle>Edit Message</DialogTitle>
             <DialogDescription>
-              Review and personalize the AI-generated message before approving.
+              {selectedMessage?.leadName} • {selectedMessage?.company}
             </DialogDescription>
           </DialogHeader>
 
           {selectedMessage && (
             <div className="space-y-4">
-              {/* Lead Context */}
-              <Card className="bg-muted/50">
-                <CardContent className="p-4">
-                  <h4 className="text-sm font-medium mb-2">Lead Context</h4>
-                  <div className="grid grid-cols-3 gap-4 text-sm">
-                    <div>
-                      <p className="text-muted-foreground">Followers</p>
-                      <p className="font-medium">{(selectedMessage.context.followers / 1000).toFixed(1)}k</p>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground">Score</p>
-                      <p className="font-medium">{selectedMessage.context.score}</p>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground">Recent Topic</p>
-                      <p className="font-medium">{selectedMessage.context.recentTopic}</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Message Editor */}
-              <div>
-                <label className="text-sm font-medium mb-2 block">Message Content</label>
-                <Textarea
-                  value={editedContent}
-                  onChange={(e) => setEditedContent(e.target.value)}
-                  className="min-h-[200px]"
-                />
-                <p className="text-xs text-muted-foreground mt-2">
-                  {editedContent.length} characters • Recommended: 150-300 characters
-                </p>
+              <div className="flex gap-4 text-sm">
+                <div className="px-3 py-2 rounded-md bg-muted">
+                  <span className="text-muted-foreground">Score:</span>{" "}
+                  <span className="font-medium">{selectedMessage.context.score}</span>
+                </div>
+                <div className="px-3 py-2 rounded-md bg-muted">
+                  <span className="text-muted-foreground">Topic:</span>{" "}
+                  <span className="font-medium">{selectedMessage.context.recentTopic}</span>
+                </div>
               </div>
+
+              <Textarea
+                value={editedContent}
+                onChange={(e) => setEditedContent(e.target.value)}
+                className="min-h-[180px]"
+              />
+              <p className="text-xs text-muted-foreground">
+                {editedContent.length} characters
+              </p>
             </div>
           )}
 
@@ -422,13 +315,13 @@ export default function Messages() {
             <Button variant="outline" onClick={closeEditor}>
               Cancel
             </Button>
-            <Button variant="destructive" className="gap-1">
-              <XCircle className="w-4 h-4" />
+            <Button variant="destructive" size="sm">
+              <XCircle className="w-4 h-4 mr-1" />
               Reject
             </Button>
-            <Button className="gap-1">
-              <CheckCircle className="w-4 h-4" />
-              Approve & Send
+            <Button>
+              <CheckCircle className="w-4 h-4 mr-1" />
+              Approve
             </Button>
           </DialogFooter>
         </DialogContent>
