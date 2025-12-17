@@ -18,17 +18,15 @@ serve(async (req) => {
 
     console.log('Sending webhook for:', { email, leadName });
 
-    const response = await fetch(WEBHOOK_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email,
-        message,
-        leadName,
-        timestamp: new Date().toISOString(),
-      }),
+    // Build URL with query parameters for GET request
+    const url = new URL(WEBHOOK_URL);
+    url.searchParams.set('email', email);
+    url.searchParams.set('message', message);
+    url.searchParams.set('leadName', leadName);
+    url.searchParams.set('timestamp', new Date().toISOString());
+
+    const response = await fetch(url.toString(), {
+      method: 'GET',
     });
 
     const responseText = await response.text();
