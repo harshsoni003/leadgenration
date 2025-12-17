@@ -2,7 +2,6 @@ import { useState } from "react";
 import {
   Send,
   CheckCircle,
-  XCircle,
   Edit3,
   Eye,
   RefreshCw,
@@ -382,14 +381,6 @@ export default function Messages() {
           <DialogFooter className="gap-2 sm:gap-0">
             <Button variant="outline" onClick={closeEditor}>
               Cancel
-            </Button>
-            <Button variant="destructive" size="sm">
-              <XCircle className="w-4 h-4 mr-1" />
-              Reject
-            </Button>
-            <Button>
-              <CheckCircle className="w-4 h-4 mr-1" />
-              Approve
             </Button>
             <Button 
               onClick={handleSendEmail} 
