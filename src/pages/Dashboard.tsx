@@ -112,10 +112,10 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <MetricCard
             title="Total Leads"
-            value="550"
+            value="2,847"
             icon={<Users className="w-5 h-5" />}
-            variant="primary"
-            subtitle="This month"
+            variant="default"
+            subtitle="+124 this week"
             animationDelay={0}
           />
           <MetricCard
