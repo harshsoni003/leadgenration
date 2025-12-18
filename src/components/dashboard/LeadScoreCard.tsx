@@ -71,7 +71,7 @@ const getScoreFactors = (lead: Lead): ScoreFactor[] => {
 const LeadScoreCard = ({ lead, className }: LeadScoreCardProps) => {
   if (!lead) {
     return (
-      <div className={cn("rounded-xl border bg-card p-6 opacity-0 animate-fade-in", className)} style={{ animationDelay: "200ms" }}>
+      <div className={cn("rounded-xl border bg-card p-6 opacity-0 animate-fade-in border-border shadow-none", className)} style={{ animationDelay: "200ms" }}>
         <div className="text-center py-8">
           <div className="w-16 h-16 mx-auto rounded-full bg-secondary flex items-center justify-center mb-4">
             <Award className="w-8 h-8 text-muted-foreground" />
@@ -85,10 +85,10 @@ const LeadScoreCard = ({ lead, className }: LeadScoreCardProps) => {
   const factors = getScoreFactors(lead);
 
   return (
-    <div className={cn("rounded-xl border bg-card p-6 opacity-0 animate-fade-in", className)} style={{ animationDelay: "200ms" }}>
+    <div className={cn("rounded-xl border bg-card p-6 opacity-0 animate-fade-in shadow-none", className)} style={{ animationDelay: "200ms" }}>
       {/* Profile Header */}
       <div className="flex items-center gap-4 mb-6">
-        <div className="w-14 h-14 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-primary-foreground text-xl font-semibold">
+        <div className="w-14 h-14 rounded-full bg-secondary text-foreground flex items-center justify-center text-xl font-semibold border border-border">
           {lead.name.charAt(0)}
         </div>
         <div>
@@ -107,7 +107,7 @@ const LeadScoreCard = ({ lead, className }: LeadScoreCardProps) => {
               cy="50"
               r="40"
               fill="none"
-              stroke="hsl(var(--secondary))"
+              stroke="hsl(0 0% 92%)"
               strokeWidth="8"
             />
             <circle
@@ -115,18 +115,12 @@ const LeadScoreCard = ({ lead, className }: LeadScoreCardProps) => {
               cy="50"
               r="40"
               fill="none"
-              stroke="url(#scoreGradient)"
+              stroke="hsl(0 0% 0%)"
               strokeWidth="8"
               strokeLinecap="round"
               strokeDasharray={`${lead.totalScore * 2.51} 251`}
               className="transition-all duration-1000 ease-out"
             />
-            <defs>
-              <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="hsl(var(--primary))" />
-                <stop offset="100%" stopColor="hsl(var(--accent))" />
-              </linearGradient>
-            </defs>
           </svg>
           {/* Score number */}
           <div className="absolute inset-0 flex items-center justify-center">
@@ -144,15 +138,15 @@ const LeadScoreCard = ({ lead, className }: LeadScoreCardProps) => {
         {factors.map((factor, idx) => (
           <div
             key={idx}
-            className="flex items-center gap-3 p-3 rounded-lg bg-secondary/50 border border-border/50"
+            className="flex items-center gap-3 p-3 rounded-lg bg-secondary/30 border border-transparent hover:border-border transition-colors"
           >
-            <div className="p-2 rounded-lg bg-primary/10 text-primary">
+            <div className="p-2 rounded-lg bg-background border border-border text-foreground">
               {factor.icon}
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm text-foreground truncate">{factor.label}</p>
             </div>
-            <span className="text-sm font-semibold text-success">+{factor.points}pts</span>
+            <span className="text-sm font-semibold text-foreground">+{factor.points}</span>
           </div>
         ))}
       </div>

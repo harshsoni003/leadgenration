@@ -79,42 +79,41 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-40">
-        <div className="px-6 py-4">
+      <header className="border-b bg-background sticky top-0 z-40">
+        <div className="px-8 py-6">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-xl bg-gradient-to-br from-primary to-accent">
-                <Zap className="w-6 h-6 text-primary-foreground" />
-              </div>
-              <div>
-                <h1 className="text-xl font-semibold text-foreground">Vistage Lead Gen Agent</h1>
-                <p className="text-sm text-muted-foreground">AI-Powered Lead Intelligence</p>
-              </div>
+            <div>
+              <h1 className="text-2xl font-semibold text-foreground tracking-tight">Analytics & ROI</h1>
+              <p className="text-sm text-muted-foreground mt-1">Track your cost efficiency and time savings</p>
             </div>
+
             <div className="flex items-center gap-4">
-              <div className="text-right">
-                <p className="text-sm text-muted-foreground">Campaign Active</p>
-                <p className="text-sm font-medium text-success flex items-center gap-1 justify-end">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-success"></span>
-                  </span>
-                  Running
-                </p>
+              <div className="flex gap-2">
+                <div className="px-3 py-1 rounded-full bg-secondary text-xs font-medium text-foreground border border-border">
+                  Overview
+                </div>
+                <div className="px-3 py-1 rounded-full text-xs font-medium text-muted-foreground hover:bg-secondary/50 cursor-pointer transition-colors">
+                  Activity Feed
+                </div>
+                <div className="px-3 py-1 rounded-full text-xs font-medium text-muted-foreground hover:bg-secondary/50 cursor-pointer transition-colors">
+                  Events
+                </div>
+                <div className="px-3 py-1 rounded-full text-xs font-medium text-muted-foreground hover:bg-secondary/50 cursor-pointer transition-colors">
+                  Workflows
+                </div>
               </div>
             </div>
           </div>
         </div>
       </header>
 
-      <main className="px-6 py-8">
+      <main className="px-8 py-8">
         {/* Metrics Row */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <MetricCard
             title="Total Leads"
             value="2,847"
             icon={<Users className="w-5 h-5" />}
-            variant="default"
             subtitle="+124 this week"
             animationDelay={0}
           />
@@ -122,7 +121,6 @@ export default function Dashboard() {
             title="Value Generated"
             value="$13,750"
             icon={<TrendingUp className="w-5 h-5" />}
-            variant="success"
             subtitle="25,000x ROI"
             animationDelay={100}
           />
@@ -130,7 +128,6 @@ export default function Dashboard() {
             title="Time Saved"
             value="137 hrs"
             icon={<Clock className="w-5 h-5" />}
-            variant="primary"
             subtitle="vs manual outreach"
             animationDelay={200}
           />
@@ -139,39 +136,55 @@ export default function Dashboard() {
         {/* Graph + Benefits Row */}
         <div className="grid lg:grid-cols-2 gap-6 mb-8">
           {/* Leads Graph */}
-          <Card className="opacity-0 animate-fade-in" style={{ animationDelay: "250ms" }}>
-            <CardHeader>
-              <CardTitle>Lead Generation Trend</CardTitle>
+          <Card className="opacity-0 animate-fade-in border-border shadow-none" style={{ animationDelay: "250ms" }}>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg">Lead Generation Trend</CardTitle>
               <CardDescription>Weekly leads captured vs qualified</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="h-[250px]">
+              <div className="h-[250px] w-full mt-4">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={leadsData}>
                     <defs>
                       <linearGradient id="colorLeads" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="hsl(199 89% 48%)" stopOpacity={0.3} />
-                        <stop offset="95%" stopColor="hsl(199 89% 48%)" stopOpacity={0} />
+                        <stop offset="5%" stopColor="hsl(0 0% 0%)" stopOpacity={0.1} />
+                        <stop offset="95%" stopColor="hsl(0 0% 0%)" stopOpacity={0} />
                       </linearGradient>
                       <linearGradient id="colorQualified" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="hsl(162 63% 41%)" stopOpacity={0.3} />
-                        <stop offset="95%" stopColor="hsl(162 63% 41%)" stopOpacity={0} />
+                        <stop offset="5%" stopColor="hsl(0 0% 60%)" stopOpacity={0.1} />
+                        <stop offset="95%" stopColor="hsl(0 0% 60%)" stopOpacity={0} />
                       </linearGradient>
                     </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(220 13% 91%)" />
-                    <XAxis dataKey="day" stroke="hsl(220 9% 46%)" fontSize={12} />
-                    <YAxis stroke="hsl(220 9% 46%)" fontSize={12} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(0 0% 92%)" vertical={false} />
+                    <XAxis
+                      dataKey="day"
+                      stroke="hsl(0 0% 60%)"
+                      fontSize={12}
+                      tickLine={false}
+                      axisLine={false}
+                      dy={10}
+                    />
+                    <YAxis
+                      stroke="hsl(0 0% 60%)"
+                      fontSize={12}
+                      tickLine={false}
+                      axisLine={false}
+                      dx={-10}
+                    />
                     <Tooltip
                       contentStyle={{
                         backgroundColor: "hsl(0 0% 100%)",
-                        border: "1px solid hsl(220 13% 91%)",
+                        border: "1px solid hsl(0 0% 92%)",
                         borderRadius: "8px",
+                        boxShadow: "0 4px 12px rgba(0,0,0,0.05)"
                       }}
+                      itemStyle={{ color: "hsl(0 0% 0%)" }}
+                      labelStyle={{ color: "hsl(0 0% 40%)", marginBottom: '0.25rem' }}
                     />
                     <Area
                       type="monotone"
                       dataKey="leads"
-                      stroke="hsl(199 89% 48%)"
+                      stroke="hsl(0 0% 0%)"
                       fill="url(#colorLeads)"
                       strokeWidth={2}
                       name="Total Leads"
@@ -179,10 +192,11 @@ export default function Dashboard() {
                     <Area
                       type="monotone"
                       dataKey="qualified"
-                      stroke="hsl(162 63% 41%)"
+                      stroke="hsl(0 0% 60%)"
                       fill="url(#colorQualified)"
                       strokeWidth={2}
                       name="Qualified"
+                      strokeDasharray="4 4"
                     />
                   </AreaChart>
                 </ResponsiveContainer>
@@ -191,21 +205,21 @@ export default function Dashboard() {
           </Card>
 
           {/* Benefits */}
-          <Card className="opacity-0 animate-fade-in" style={{ animationDelay: "300ms" }}>
-            <CardHeader>
-              <CardTitle>Why AI Lead Generation?</CardTitle>
+          <Card className="opacity-0 animate-fade-in border-border shadow-none" style={{ animationDelay: "300ms" }}>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg">Why AI Lead Generation?</CardTitle>
               <CardDescription>Key benefits of automated prospecting</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 gap-4">
+              <div className="grid grid-cols-1 gap-4 mt-4">
                 {benefits.map((benefit, idx) => (
-                  <div key={idx} className="flex items-start gap-3 p-3 rounded-lg hover:bg-secondary/50 transition-colors">
-                    <div className={`p-2 rounded-lg ${benefit.bgColor}`}>
-                      <benefit.icon className={`w-5 h-5 ${benefit.color}`} />
+                  <div key={idx} className="flex items-start gap-4 p-3 rounded-lg hover:bg-secondary/30 transition-colors border border-transparent hover:border-border/50">
+                    <div className={`mt-1 p-2 rounded-md bg-secondary text-foreground`}>
+                      <benefit.icon className={`w-4 h-4`} />
                     </div>
                     <div>
-                      <p className="font-medium text-foreground">{benefit.title}</p>
-                      <p className="text-sm text-muted-foreground">{benefit.description}</p>
+                      <p className="font-medium text-foreground text-sm">{benefit.title}</p>
+                      <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{benefit.description}</p>
                     </div>
                   </div>
                 ))}

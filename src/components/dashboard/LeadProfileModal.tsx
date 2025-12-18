@@ -2,17 +2,16 @@ import {
   MapPin,
   Building,
   Users,
-  Link as LinkIcon,
   Eye,
   BarChart3,
   Briefcase,
-  GraduationCap,
   X,
+  Pencil,
+  Shield,
 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -29,162 +28,202 @@ const LeadProfileModal = ({ lead, open, onClose }: LeadProfileModalProps) => {
   if (!lead) return null;
 
   // Generate dummy detailed data based on lead
-  const profileData = {
+  const profileData = lead.name === "Pratik Kadam" ? {
+    headline: `building AgenticOs @customaistudio.io | Building the platform for Executives and not developers | Context Engineering | Prompt Engineering`,
+    about: `I am building AI Agent's which solve real life business.`,
+    profileViews: 246,
+    postImpressions: 188,
+    connections: "500+",
+    pronouns: "He/Him",
+  } : {
     headline: `${lead.title} at ${lead.company} | Helping businesses scale through innovation`,
-    about: `I'm a ${lead.title} with a passion for building modern, user-friendly solutions. I specialize in strategic leadership, business development, and scaling operations, helping businesses create efficient and scalable solutions.\n\nI'm focused on driving growth and building high-performing teams that deliver exceptional results.`,
-    education: "MBA, Business Administration",
-    university: "Wharton School of Business",
-    skills: ["Leadership", "Business Strategy", "Sales", "Team Building", "Operations"],
+    about: `I'm a ${lead.title} with a passion for building modern, user-friendly solutions.`,
     profileViews: Math.floor(Math.random() * 200) + 50,
     postImpressions: Math.floor(Math.random() * 1000) + 200,
     connections: "500+",
-    experience: [
-      {
-        title: lead.title,
-        company: lead.company,
-        duration: "2019 - Present",
-        description: `Leading strategic initiatives and driving company growth.`,
-      },
-      {
-        title: "VP of Operations",
-        company: "Previous Corp",
-        duration: "2015 - 2019",
-        description: "Managed operations and scaled the team from 20 to 100+.",
-      },
-    ],
+    pronouns: "He/Him",
+  };
+
+  // Generate initials or use first letter
+  const getInitials = (name: string) => {
+    const parts = name.split(" ");
+    if (parts.length >= 2) {
+      return parts[0][0] + parts[1][0];
+    }
+    return name.substring(0, 2).toUpperCase();
   };
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto p-0">
-        {/* Cover Image */}
-        <div className="h-24 bg-gradient-to-r from-primary/20 via-accent/20 to-primary/10 relative">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute top-2 right-2 bg-background/80 hover:bg-background"
-            onClick={onClose}
-          >
-            <X className="w-4 h-4" />
-          </Button>
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0 bg-white">
+        {/* Cover Image with Audio Waveform */}
+        <div className="h-64 bg-black relative overflow-hidden">
+          {/* Use actual banner if available, otherwise show waveform */}
+          {lead.name === "Pratik Kadam" ? (
+            <img
+              src="/assets/pratik-banner.jpg"
+              alt="Profile Banner"
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <>
+              {/* Audio Waveform Visualization */}
+              <div className="absolute inset-0 flex items-end justify-center px-8 pb-4">
+                <div className="flex items-end gap-[2px] h-24 w-full max-w-3xl">
+                  {Array.from({ length: 120 }).map((_, i) => {
+                    const height = Math.random() * 100;
+                    const isHighlight = i > 80;
+                    return (
+                      <div
+                        key={i}
+                        className={`flex-1 rounded-sm transition-all ${isHighlight ? "bg-white" : "bg-white/40"
+                          }`}
+                        style={{ height: `${height}%` }}
+                      />
+                    );
+                  })}
+                </div>
+                {/* AI Label */}
+                <div className="absolute right-8 top-1/2 -translate-y-1/2 bg-white/10 backdrop-blur-sm px-3 py-1 rounded text-white text-sm font-medium">
+                  AI ▼
+                </div>
+              </div>
+            </>
+          )}
         </div>
 
-        {/* Profile Header */}
-        <div className="px-6 -mt-12 relative">
+        {/* Profile Section */}
+        <div className="px-8 -mt-20 relative bg-white">
           <div className="flex items-end gap-4">
-            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-primary-foreground text-3xl font-bold border-4 border-background shadow-lg">
-              {lead.name.charAt(0)}
+            {/* Profile Picture */}
+            <div className="w-40 h-40 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-5xl font-bold border-4 border-white shadow-lg overflow-hidden">
+              {lead.avatar ? (
+                <img
+                  src={lead.avatar}
+                  alt={lead.name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-600">
+                  {getInitials(lead.name)}
+                </div>
+              )}
             </div>
+
+            {/* Edit Profile Button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="mb-2 ml-auto bg-white hover:bg-gray-50 rounded-full w-10 h-10 border border-gray-300"
+            >
+              <Pencil className="w-4 h-4 text-gray-700" />
+            </Button>
           </div>
 
-          <div className="mt-3">
+          <div className="mt-4">
             <div className="flex items-center gap-2">
-              <h2 className="text-xl font-bold text-foreground">{lead.name}</h2>
-              <Badge variant="outline" className="text-xs">He/Him</Badge>
+              <h2 className="text-2xl font-bold text-gray-900">{lead.name}</h2>
+              <Shield className="w-5 h-5 text-gray-500" />
+              <Badge variant="outline" className="text-xs text-gray-600 border-gray-300 bg-white font-normal">
+                {profileData.pronouns}
+              </Badge>
             </div>
-            <p className="text-sm text-muted-foreground mt-1">{profileData.headline}</p>
-            
-            <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
+            <p className="text-base text-gray-900 mt-2 leading-relaxed">
+              {profileData.headline}
+            </p>
+
+            <div className="flex items-center gap-2 mt-3 text-sm text-gray-600">
               <span className="flex items-center gap-1">
-                <MapPin className="w-4 h-4" />
                 {lead.location}
               </span>
-              <span className="text-primary hover:underline cursor-pointer">Contact info</span>
+              <span>·</span>
+              <span className="text-blue-600 hover:underline cursor-pointer font-semibold">
+                Contact info
+              </span>
             </div>
 
-            <div className="flex items-center gap-2 mt-2">
-              <span className="text-sm text-primary font-medium">{lead.followers} followers</span>
-              <span className="text-muted-foreground">·</span>
-              <span className="text-sm text-muted-foreground">{profileData.connections} connections</span>
+            <div className="flex items-center gap-2 mt-2 text-sm">
+              <span className="text-blue-600 font-semibold hover:underline cursor-pointer">
+                {lead.followers} followers
+              </span>
+              <span className="text-gray-600">·</span>
+              <span className="text-gray-600">{profileData.connections} connections</span>
             </div>
 
-            <div className="flex items-center gap-2 mt-3 text-sm">
-              <Building className="w-4 h-4 text-muted-foreground" />
-              <span className="text-foreground">{lead.company}</span>
+            <div className="flex gap-2 mt-4 flex-wrap">
+              <Button size="sm" className="rounded-full bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4">
+                Open to
+              </Button>
+              <Button size="sm" variant="outline" className="rounded-full border-blue-600 text-blue-600 hover:bg-blue-50 font-semibold px-4">
+                Add profile section
+              </Button>
+              <Button size="sm" variant="outline" className="rounded-full border-gray-400 text-gray-700 hover:bg-gray-50 font-semibold px-4">
+                Enhance profile
+              </Button>
+              <Button size="sm" variant="outline" className="rounded-full border-gray-400 text-gray-700 hover:bg-gray-50 font-semibold px-4">
+                Resources
+              </Button>
             </div>
-          </div>
-
-          <div className="flex gap-2 mt-4">
-            <Button size="sm" className="rounded-full">Open to</Button>
-            <Button size="sm" variant="outline" className="rounded-full">Add profile section</Button>
-            <Button size="sm" variant="outline" className="rounded-full">Enhance profile</Button>
-            <Button size="sm" variant="outline" className="rounded-full">Resources</Button>
           </div>
         </div>
 
-        <Separator className="my-4" />
+        <Separator className="my-6" />
 
         {/* Analytics Section */}
-        <div className="px-6">
-          <div className="p-4 rounded-lg border bg-card">
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="font-semibold text-foreground">Analytics</h3>
-              <Badge variant="outline" className="text-xs">Private to you</Badge>
-            </div>
-            <div className="grid grid-cols-2 gap-4 mt-3">
-              <div className="flex items-center gap-3">
-                <Eye className="w-5 h-5 text-muted-foreground" />
-                <div>
-                  <p className="font-semibold text-foreground">{profileData.profileViews} profile views</p>
-                  <p className="text-xs text-muted-foreground">Discover who's viewed your profile.</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <BarChart3 className="w-5 h-5 text-muted-foreground" />
-                <div>
-                  <p className="font-semibold text-foreground">{profileData.postImpressions} post impressions</p>
-                  <p className="text-xs text-muted-foreground">Check out who's engaging with your posts.</p>
-                </div>
+        <div className="px-8">
+          <div className="p-4 rounded-lg bg-gray-50 border border-gray-200">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-lg font-semibold text-gray-900">Analytics</h3>
+              <div className="flex items-center gap-1 text-xs text-gray-600">
+                <Eye className="w-3 h-3" />
+                <span>Private to you</span>
               </div>
             </div>
-            <p className="text-sm text-muted-foreground mt-3 cursor-pointer hover:text-primary">
+            <div className="grid grid-cols-2 gap-6 mt-4">
+              <div className="flex items-start gap-3">
+                <Users className="w-6 h-6 text-gray-600 mt-1" />
+                <div>
+                  <p className="font-semibold text-gray-900">{profileData.profileViews} profile views</p>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Discover who's viewed your profile.
+                  </p>
+                  <p className="text-xs text-gray-500 mt-1">Past 7 days</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <BarChart3 className="w-6 h-6 text-gray-600 mt-1" />
+                <div>
+                  <p className="font-semibold text-gray-900">{profileData.postImpressions} post impressions</p>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Check out who's engaging with your posts.
+                  </p>
+                  <p className="text-xs text-gray-500 mt-1">Past 7 days</p>
+                </div>
+              </div>
+            </div>
+            <button className="text-sm text-gray-700 hover:text-blue-600 mt-4 font-semibold flex items-center gap-1">
               Show all analytics →
-            </p>
+            </button>
           </div>
         </div>
 
-        <Separator className="my-4" />
+        <Separator className="my-6" />
 
         {/* About Section */}
-        <div className="px-6">
-          <h3 className="font-semibold text-foreground mb-3">About</h3>
-          <p className="text-sm text-muted-foreground whitespace-pre-line">{profileData.about}</p>
-        </div>
-
-        <Separator className="my-4" />
-
-        {/* Experience Section */}
-        <div className="px-6">
-          <h3 className="font-semibold text-foreground mb-3">Experience</h3>
-          <div className="space-y-4">
-            {profileData.experience.map((exp, idx) => (
-              <div key={idx} className="flex gap-3">
-                <div className="w-12 h-12 rounded bg-muted flex items-center justify-center">
-                  <Briefcase className="w-6 h-6 text-muted-foreground" />
-                </div>
-                <div>
-                  <p className="font-medium text-foreground">{exp.title}</p>
-                  <p className="text-sm text-muted-foreground">{exp.company}</p>
-                  <p className="text-xs text-muted-foreground">{exp.duration}</p>
-                  <p className="text-sm text-muted-foreground mt-1">{exp.description}</p>
-                </div>
-              </div>
-            ))}
+        <div className="px-8 pb-8">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-lg font-semibold text-gray-900">About</h3>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="hover:bg-gray-100 rounded-full w-8 h-8"
+            >
+              <Pencil className="w-4 h-4 text-gray-700" />
+            </Button>
           </div>
-        </div>
-
-        <Separator className="my-4" />
-
-        {/* Skills Section */}
-        <div className="px-6 pb-6">
-          <h3 className="font-semibold text-foreground mb-3">Top skills</h3>
-          <div className="flex flex-wrap gap-2">
-            {profileData.skills.map((skill, idx) => (
-              <Badge key={idx} variant="secondary" className="text-sm">
-                {skill}
-              </Badge>
-            ))}
-          </div>
+          <p className="text-sm text-gray-900 leading-relaxed whitespace-pre-line">
+            {profileData.about}
+          </p>
         </div>
       </DialogContent>
     </Dialog>

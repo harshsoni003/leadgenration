@@ -1,4 +1,5 @@
-import { useState } from "react";
+
+import { useState, useMemo } from "react";
 import {
   Search,
   Filter,
@@ -17,7 +18,7 @@ import {
   Star,
   Bell,
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -43,6 +44,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import leadDataJson from "@/lib/leaddata.json";
 
 interface Lead {
   id: number;
@@ -57,150 +59,56 @@ interface Lead {
   eventSignals: string[];
   lastPost: string;
   linkedinUrl: string;
+  avatar?: string;
 }
 
-const leads: Lead[] = [
-  {
-    id: 1,
-    name: "Andrew L.",
-    title: "CEO",
-    company: "TechVentures Inc",
-    companySize: "150",
-    location: "Philadelphia, PA",
-    followers: 12500,
-    score: 94,
-    status: "qualified",
-    eventSignals: ["Conference", "Speaker"],
-    lastPost: "2 days ago",
-    linkedinUrl: "#",
-  },
-  {
-    id: 2,
-    name: "Sarah M.",
-    title: "Founder & CEO",
-    company: "FinanceFlow",
-    companySize: "85",
-    location: "Philadelphia, PA",
-    followers: 8900,
-    score: 91,
-    status: "contacted",
-    eventSignals: ["Summit", "Retreat"],
-    lastPost: "1 day ago",
-    linkedinUrl: "#",
-  },
-  {
-    id: 3,
-    name: "Michael R.",
-    title: "President",
-    company: "Healthcare Plus",
-    companySize: "200",
-    location: "King of Prussia, PA",
-    followers: 15200,
-    score: 88,
-    status: "pending",
-    eventSignals: ["Conference"],
-    lastPost: "3 days ago",
-    linkedinUrl: "#",
-  },
-  {
-    id: 4,
-    name: "Jennifer K.",
-    title: "CEO",
-    company: "RetailMax",
-    companySize: "120",
-    location: "Cherry Hill, NJ",
-    followers: 7600,
-    score: 85,
-    status: "qualified",
-    eventSignals: ["Workshop", "Panel"],
-    lastPost: "Today",
-    linkedinUrl: "#",
-  },
-  {
-    id: 5,
-    name: "David W.",
-    title: "Founder",
-    company: "SaaS Solutions",
-    companySize: "65",
-    location: "Philadelphia, PA",
-    followers: 11300,
-    score: 82,
-    status: "contacted",
-    eventSignals: ["Keynote"],
-    lastPost: "5 days ago",
-    linkedinUrl: "#",
-  },
-  {
-    id: 6,
-    name: "Lisa T.",
-    title: "CEO",
-    company: "ConsultPro",
-    companySize: "55",
-    location: "Wilmington, DE",
-    followers: 6200,
-    score: 79,
-    status: "pending",
-    eventSignals: [],
-    lastPost: "1 week ago",
-    linkedinUrl: "#",
-  },
-  {
-    id: 7,
-    name: "Robert P.",
-    title: "Managing Director",
-    company: "Investment Group",
-    companySize: "180",
-    location: "Philadelphia, PA",
-    followers: 18500,
-    score: 96,
-    status: "qualified",
-    eventSignals: ["Summit", "Speaker", "Conference"],
-    lastPost: "Today",
-    linkedinUrl: "#",
-  },
-  {
-    id: 8,
-    name: "Emily C.",
-    title: "Founder & CEO",
-    company: "EdTech Innovate",
-    companySize: "45",
-    location: "Princeton, NJ",
-    followers: 5100,
-    score: 72,
-    status: "rejected",
-    eventSignals: [],
-    lastPost: "2 weeks ago",
-    linkedinUrl: "#",
-  },
-  {
-    id: 9,
-    name: "James H.",
-    title: "CEO",
-    company: "Manufacturing Co",
-    companySize: "320",
-    location: "Allentown, PA",
-    followers: 9800,
-    score: 87,
-    status: "qualified",
-    eventSignals: ["Retreat", "Networking"],
-    lastPost: "3 days ago",
-    linkedinUrl: "#",
-  },
-  {
-    id: 10,
-    name: "Amanda B.",
-    title: "President",
-    company: "Legal Services LLC",
-    companySize: "75",
-    location: "Philadelphia, PA",
-    followers: 7200,
-    score: 81,
-    status: "pending",
-    eventSignals: ["Panel"],
-    lastPost: "4 days ago",
-    linkedinUrl: "#",
-  },
-];
+interface LinkedInLead {
+  companyIndustry: string;
+  companyLocation: string;
+  companyName: string;
+  connectionType: string;
+  firstName: string;
+  id: string;
+  jobTitle: string;
+  lastName: string;
+  location: string;
+  openLink: string;
+  pendingInvitation: string;
+  premium: string;
+  profileId: string;
+  profilePictureUrl: string;
+  profileUrl: string;
+  salesNavigatorUrl: string;
+  saved: string;
+  viewed: string;
+}
+
+// Convert JSON data to Lead interface
+const allLeads: Lead[] = (leadDataJson as LinkedInLead[]).map((itm, index) => {
+  const fullName = `${itm.firstName} ${itm.lastName}`;
+  const score = Math.floor(Math.random() * 30) + 70; // Mock score 70-100
+  const followers = Math.floor(Math.random() * 20000) + 500;
+
+  // Deterministic status based on index/random for variety
+  const statuses: Lead["status"][] = ["qualified", "pending", "contacted", "rejected"];
+  const status = statuses[index % 4];
+
+  return {
+    id: parseInt(itm.id) || index,
+    name: fullName,
+    title: itm.jobTitle,
+    company: itm.companyName,
+    companySize: "11-50", // Placeholder
+    location: itm.location || itm.companyLocation,
+    followers,
+    score,
+    status,
+    eventSignals: itm.companyIndustry ? [itm.companyIndustry] : [],
+    lastPost: `${Math.floor(Math.random() * 10) + 1} days ago`,
+    linkedinUrl: itm.profileUrl,
+    avatar: itm.profilePictureUrl
+  };
+});
 
 const getStatusConfig = (status: Lead["status"]) => {
   switch (status) {
@@ -216,9 +124,9 @@ const getStatusConfig = (status: Lead["status"]) => {
 };
 
 const getScoreColor = (score: number) => {
-  if (score >= 90) return "text-success";
-  if (score >= 80) return "text-primary";
-  if (score >= 70) return "text-warning";
+  if (score >= 90) return "text-emerald-600";
+  if (score >= 80) return "text-blue-600";
+  if (score >= 70) return "text-amber-600";
   return "text-muted-foreground";
 };
 
@@ -227,14 +135,16 @@ export default function Leads() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
 
-  const filteredLeads = leads.filter((lead) => {
-    const matchesSearch =
-      lead.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      lead.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      lead.location.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStatus = statusFilter === "all" || lead.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  });
+  const filteredLeads = useMemo(() => {
+    return allLeads.filter((lead) => {
+      const matchesSearch =
+        lead.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        lead.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        lead.location.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesStatus = statusFilter === "all" || lead.status === statusFilter;
+      return matchesSearch && matchesStatus;
+    });
+  }, [searchQuery, statusFilter]);
 
   const toggleSelectAll = () => {
     if (selectedLeads.length === filteredLeads.length) {
@@ -251,22 +161,22 @@ export default function Leads() {
   };
 
   const stats = {
-    total: leads.length,
-    qualified: leads.filter((l) => l.status === "qualified").length,
-    pending: leads.filter((l) => l.status === "pending").length,
-    contacted: leads.filter((l) => l.status === "contacted").length,
+    total: allLeads.length,
+    qualified: allLeads.filter((l) => l.status === "qualified").length,
+    pending: allLeads.filter((l) => l.status === "pending").length,
+    contacted: allLeads.filter((l) => l.status === "contacted").length,
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col h-screen overflow-hidden">
       {/* Header */}
-      <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-40">
+      <header className="border-b bg-card/50 backdrop-blur-sm z-40 flex-none">
         <div className="px-6 py-4">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-semibold text-foreground">Lead Database</h1>
               <p className="text-sm text-muted-foreground">
-                {leads.length} total leads • {stats.qualified} qualified
+                {allLeads.length} total leads • {stats.qualified} qualified
               </p>
             </div>
             <div className="flex items-center gap-3">
@@ -283,9 +193,9 @@ export default function Leads() {
         </div>
       </header>
 
-      <div className="p-6 space-y-6">
+      <div className="flex-1 overflow-hidden flex flex-col p-6 space-y-6">
         {/* Stats Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 flex-none">
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
@@ -302,11 +212,11 @@ export default function Leads() {
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-success/10">
-                  <CheckCircle className="w-5 h-5 text-success" />
+                <div className="p-2 rounded-lg bg-emerald-100 dark:bg-emerald-900/20">
+                  <CheckCircle className="w-5 h-5 text-emerald-600" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-success">{stats.qualified}</p>
+                  <p className="text-2xl font-bold text-emerald-600">{stats.qualified}</p>
                   <p className="text-sm text-muted-foreground">Qualified</p>
                 </div>
               </div>
@@ -315,11 +225,11 @@ export default function Leads() {
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-warning/10">
-                  <Clock className="w-5 h-5 text-warning" />
+                <div className="p-2 rounded-lg bg-amber-100 dark:bg-amber-900/20">
+                  <Clock className="w-5 h-5 text-amber-600" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-warning">{stats.pending}</p>
+                  <p className="text-2xl font-bold text-amber-600">{stats.pending}</p>
                   <p className="text-sm text-muted-foreground">Pending Review</p>
                 </div>
               </div>
@@ -328,11 +238,11 @@ export default function Leads() {
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-primary/10">
-                  <MessageSquare className="w-5 h-5 text-primary" />
+                <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/20">
+                  <MessageSquare className="w-5 h-5 text-blue-600" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-primary">{stats.contacted}</p>
+                  <p className="text-2xl font-bold text-blue-600">{stats.contacted}</p>
                   <p className="text-sm text-muted-foreground">Contacted</p>
                 </div>
               </div>
@@ -341,7 +251,7 @@ export default function Leads() {
         </div>
 
         {/* Filters & Search */}
-        <Card>
+        <Card className="flex-none">
           <CardContent className="p-4">
             <div className="flex flex-col md:flex-row gap-4">
               <div className="relative flex-1">
@@ -375,7 +285,7 @@ export default function Leads() {
 
         {/* Bulk Actions */}
         {selectedLeads.length > 0 && (
-          <Card className="border-primary bg-primary/5">
+          <Card className="border-primary bg-primary/5 flex-none">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <span className="text-sm">
@@ -397,11 +307,11 @@ export default function Leads() {
           </Card>
         )}
 
-        {/* Leads Table */}
-        <Card>
-          <CardContent className="p-0">
+        {/* Leads Table Container with Scroll */}
+        <div className="flex-1 min-h-0 border rounded-lg overflow-hidden bg-card">
+          <div className="h-full overflow-y-auto">
             <Table>
-              <TableHeader>
+              <TableHeader className="sticky top-0 bg-card z-10 shadow-sm">
                 <TableRow>
                   <TableHead className="w-12">
                     <Checkbox
@@ -424,7 +334,7 @@ export default function Leads() {
                   const StatusIcon = statusConfig.icon;
 
                   return (
-                    <TableRow key={lead.id} className="group">
+                    <TableRow key={lead.id} className="group hover:bg-muted/50">
                       <TableCell>
                         <Checkbox
                           checked={selectedLeads.includes(lead.id)}
@@ -433,9 +343,17 @@ export default function Leads() {
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-primary-foreground font-medium text-sm">
-                            {lead.name.split(" ").map((n) => n[0]).join("")}
-                          </div>
+                          {lead.avatar ? (
+                            <img
+                              src={lead.avatar}
+                              alt={lead.name}
+                              className="w-10 h-10 rounded-full object-cover border border-border"
+                            />
+                          ) : (
+                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-primary-foreground font-medium text-sm">
+                              {lead.name.split(" ").map((n) => n[0]).join("")}
+                            </div>
+                          )}
                           <div>
                             <p className="font-medium text-foreground">{lead.name}</p>
                             <p className="text-sm text-muted-foreground">{lead.title}</p>
@@ -444,7 +362,7 @@ export default function Leads() {
                       </TableCell>
                       <TableCell>
                         <div>
-                          <p className="font-medium">{lead.company}</p>
+                          <p className="font-medium max-w-[200px] truncate" title={lead.company}>{lead.company}</p>
                           <p className="text-sm text-muted-foreground flex items-center gap-1">
                             <Building className="w-3 h-3" />
                             {lead.companySize} employees
@@ -454,7 +372,7 @@ export default function Leads() {
                       <TableCell>
                         <div className="flex items-center gap-1 text-muted-foreground">
                           <MapPin className="w-3 h-3" />
-                          {lead.location}
+                          <span className="max-w-[150px] truncate" title={lead.location}>{lead.location}</span>
                         </div>
                       </TableCell>
                       <TableCell>
@@ -471,12 +389,12 @@ export default function Leads() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <div className="flex flex-wrap gap-1">
+                        <div className="flex flex-wrap gap-1 max-w-[200px]">
                           {lead.eventSignals.length > 0 ? (
-                            lead.eventSignals.map((signal) => (
-                              <Badge key={signal} variant="outline" className="text-xs gap-1">
+                            lead.eventSignals.map((signal, i) => (
+                              <Badge key={i} variant="outline" className="text-xs gap-1">
                                 <Bell className="w-3 h-3" />
-                                {signal}
+                                <span className="truncate max-w-[100px]">{signal}</span>
                               </Badge>
                             ))
                           ) : (
@@ -485,7 +403,7 @@ export default function Leads() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Badge variant={statusConfig.variant} className="gap-1">
+                        <Badge variant={statusConfig.variant} className="gap-1 whitespace-nowrap">
                           <StatusIcon className="w-3 h-3" />
                           {statusConfig.label}
                         </Badge>
@@ -508,7 +426,7 @@ export default function Leads() {
                             </DropdownMenuItem>
                             <DropdownMenuItem className="gap-2">
                               <ExternalLink className="w-4 h-4" />
-                              Open LinkedIn
+                              <a href={lead.linkedinUrl} target="_blank" rel="noopener noreferrer">Open LinkedIn</a>
                             </DropdownMenuItem>
                             <DropdownMenuItem className="gap-2 text-destructive">
                               <XCircle className="w-4 h-4" />
@@ -522,9 +440,10 @@ export default function Leads() {
                 })}
               </TableBody>
             </Table>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     </div>
   );
 }
+

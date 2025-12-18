@@ -1,85 +1,53 @@
-import { useLocation, Link } from "react-router-dom";
-import {
-  LayoutDashboard,
-  BarChart3,
-  MessageSquare,
-  Settings,
-  Linkedin,
-} from "lucide-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { LayoutGrid, MessageSquare, BarChart2 } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { icon: LayoutDashboard, label: "Dashboard", path: "/" },
-  { icon: BarChart3, label: "Analytics", path: "/analytics" },
-  { icon: MessageSquare, label: "Messages", path: "/messages" },
-];
-
-const bottomItems = [
-  { icon: Settings, label: "Settings", path: "/settings" },
+  { icon: LayoutGrid, path: "/", label: "Dashboard" },
+  { icon: BarChart2, path: "/analytics", label: "Analytics" },
+  { icon: MessageSquare, path: "/messages", label: "Messages" },
 ];
 
 export default function AppSidebar() {
   const location = useLocation();
 
-  const NavItem = ({ item }: { item: typeof navItems[0] }) => {
-    const isActive = location.pathname === item.path;
-    const Icon = item.icon;
-
-    return (
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Link
-            to={item.path}
-            className={cn(
-              "flex items-center justify-center w-12 h-12 rounded-xl transition-all duration-200",
-              isActive
-                ? "bg-primary text-primary-foreground shadow-glow"
-                : "text-muted-foreground hover:text-foreground hover:bg-sidebar-accent"
-            )}
-          >
-            <Icon className="w-5 h-5" />
-          </Link>
-        </TooltipTrigger>
-        <TooltipContent side="right" className="ml-2">
-          {item.label}
-        </TooltipContent>
-      </Tooltip>
-    );
-  };
-
   return (
-    <aside className="fixed left-0 top-0 z-50 flex h-screen w-[72px] flex-col bg-sidebar border-r border-sidebar-border">
-      {/* Logo */}
-      <div className="flex items-center justify-center h-16 border-b border-sidebar-border">
-        <div className="w-10 h-10 rounded-xl bg-[#0A66C2] flex items-center justify-center">
-          <Linkedin className="w-6 h-6 text-primary-foreground" />
+    <aside className="w-[72px] shrink-0 h-screen sticky top-0 flex flex-col bg-sidebar border-r border-sidebar-border/50 py-6 items-center z-50">
+      {/* LinkedIn Logo */}
+      <div className="mb-8 p-2">
+        <div className="w-10 h-10 bg-[#0a66c2] rounded-md flex items-center justify-center text-white font-bold text-2xl">
+          in
         </div>
       </div>
 
       {/* Main Navigation */}
-      <nav className="flex-1 flex flex-col items-center gap-2 py-4">
-        {navItems.map((item) => (
-          <NavItem key={item.path} item={item} />
-        ))}
+      <nav className="flex flex-col gap-6 w-full items-center">
+        {navItems.map((item) => {
+          const isActive = location.pathname === item.path || (item.path !== "/" && location.pathname.startsWith(item.path));
+
+          return (
+            <Link
+              key={item.path}
+              to={item.path}
+              className={cn(
+                "w-10 h-10 flex items-center justify-center rounded-md transition-all duration-200",
+                isActive
+                  ? "bg-[#0a66c2] text-white shadow-sm"
+                  : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
+              )}
+              title={item.label}
+            >
+              <item.icon className="w-5 h-5" strokeWidth={isActive ? 2.5 : 2} />
+            </Link>
+          );
+        })}
       </nav>
 
-      {/* Bottom Navigation */}
-      <div className="flex flex-col items-center gap-2 py-4 border-t border-sidebar-border">
-        {bottomItems.map((item) => (
-          <NavItem key={item.path} item={item} />
-        ))}
-        
-        {/* User Avatar */}
-        <div className="mt-2">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-primary-foreground font-semibold text-sm">
-            JD
-          </div>
-        </div>
+      {/* Bottom Actions (Placeholder) */}
+      <div className="mt-auto flex flex-col gap-4 pb-4">
+        <button className="w-10 h-10 flex items-center justify-center text-muted-foreground hover:text-foreground">
+          <MessageSquare className="w-5 h-5" />
+        </button>
       </div>
     </aside>
   );

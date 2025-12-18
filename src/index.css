@@ -1,38 +1,46 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 @import "@fontsource/geist-sans/400.css";
 @import "@fontsource/geist-sans/500.css";
 @import "@fontsource/geist-sans/600.css";
 @import "@fontsource/geist-sans/700.css";
 
-/* Lead Gen Dashboard Design System - Pure White SaaS Aesthetic */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* MalloryOS Design System - Minimalist Monochrome */
 
 @layer base {
   :root {
+    /* Pure White Base */
     --background: 0 0% 100%;
-    --foreground: 220 14% 10%;
+    --foreground: 0 0% 0%;
 
+    /* Cards - Minimal borders, no heavy shadows by default */
     --card: 0 0% 100%;
-    --card-foreground: 220 14% 10%;
+    --card-foreground: 0 0% 0%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 14% 10%;
+    --popover-foreground: 0 0% 0%;
 
-    --primary: 199 89% 48%;
+    /* Primary - Strong Black */
+    --primary: 0 0% 0%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 14% 96%;
-    --secondary-foreground: 220 14% 10%;
+    /* Secondary - Light Gray */
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 0%;
 
-    --muted: 220 14% 96%;
-    --muted-foreground: 220 9% 46%;
+    /* Muted - Subtle Gray text/backgrounds */
+    --muted: 0 0% 98%;
+    --muted-foreground: 0 0% 45%;
 
-    --accent: 162 63% 41%;
-    --accent-foreground: 0 0% 100%;
+    /* Accents - Keep it monochrome or very subtle functional colors */
+    --accent: 0 0% 96%;
+    --accent-foreground: 0 0% 0%;
 
-    --success: 152 69% 40%;
+    /* Functional Colors - Muted/Pastel variants so they don't break the vibe */
+    --success: 142 76% 36%;
+    /* Gentle Green */
     --success-foreground: 0 0% 100%;
 
     --warning: 38 92% 50%;
@@ -41,75 +49,78 @@
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 199 89% 48%;
+    /* Borders & Inputs */
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 0 0% 0%;
+    /* Black focus rings */
 
-    --radius: 0.75rem;
+    --radius: 0.5rem;
+    /* Slightly tighter radius for a cleaner look */
 
-    /* Custom gradients */
-    --gradient-cyan: linear-gradient(135deg, hsl(199 89% 48%) 0%, hsl(186 91% 45%) 100%);
-    --gradient-mint: linear-gradient(135deg, hsl(162 63% 41%) 0%, hsl(152 69% 40%) 100%);
-    --gradient-glow-cyan: 0 0 20px hsl(199 89% 48% / 0.3);
-    --gradient-glow-mint: 0 0 20px hsl(162 63% 41% / 0.3);
-
-    /* Shadows */
-    --shadow-sm: 0 1px 2px hsl(220 14% 10% / 0.04);
-    --shadow-md: 0 4px 12px hsl(220 14% 10% / 0.08);
-    --shadow-lg: 0 8px 24px hsl(220 14% 10% / 0.12);
-    --shadow-xl: 0 16px 48px hsl(220 14% 10% / 0.16);
-    --shadow-glow: 0 0 0 1px hsl(199 89% 48% / 0.1), 0 4px 12px hsl(199 89% 48% / 0.15);
-
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 220 14% 10%;
-    --sidebar-primary: 199 89% 48%;
+    /* Sidebar Variables - Consistent with main theme */
+    --sidebar-background: 0 0% 99%;
+    /* Very subtle off-white for separation */
+    --sidebar-foreground: 0 0% 20%;
+    --sidebar-primary: 0 0% 0%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 14% 96%;
-    --sidebar-accent-foreground: 220 14% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 199 89% 48%;
+    --sidebar-accent: 0 0% 94%;
+    --sidebar-accent-foreground: 0 0% 0%;
+    --sidebar-border: 0 0% 92%;
+    --sidebar-ring: 0 0% 0%;
+
+    /* Custom Shadows - Soft & Diffuse */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+    --shadow-focus: 0 0 0 2px rgba(0, 0, 0, 0.1);
   }
 
   .dark {
-    --background: 220 14% 4%;
+    /* Dark Mode - Deep Black/Charcoal */
+    --background: 0 0% 5%;
     --foreground: 0 0% 98%;
 
-    --card: 220 14% 6%;
+    --card: 0 0% 8%;
     --card-foreground: 0 0% 98%;
 
-    --popover: 220 14% 6%;
+    --popover: 0 0% 8%;
     --popover-foreground: 0 0% 98%;
 
-    --primary: 199 89% 48%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 0 0% 98%;
+    /* White primary in dark mode */
+    --primary-foreground: 0 0% 0%;
 
-    --secondary: 220 14% 14%;
+    --secondary: 0 0% 12%;
     --secondary-foreground: 0 0% 98%;
 
-    --muted: 220 14% 14%;
-    --muted-foreground: 220 9% 60%;
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 60%;
 
-    --accent: 162 63% 41%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 0 0% 15%;
+    --accent-foreground: 0 0% 98%;
 
-    --success: 152 69% 40%;
+    --success: 142 70% 50%;
     --success-foreground: 0 0% 100%;
+
+    --warning: 48 96% 89%;
+    --warning-foreground: 38 92% 50%;
 
     --destructive: 0 62% 30%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 220 14% 16%;
-    --input: 220 14% 16%;
-    --ring: 199 89% 48%;
+    --border: 0 0% 18%;
+    --input: 0 0% 18%;
+    --ring: 0 0% 98%;
 
-    --sidebar-background: 220 14% 6%;
-    --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 199 89% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 14% 14%;
+    --sidebar-background: 0 0% 3%;
+    --sidebar-foreground: 0 0% 90%;
+    --sidebar-primary: 0 0% 98%;
+    --sidebar-primary-foreground: 0 0% 0%;
+    --sidebar-accent: 0 0% 12%;
     --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 220 14% 16%;
-    --sidebar-ring: 199 89% 48%;
+    --sidebar-border: 0 0% 12%;
+    --sidebar-ring: 0 0% 98%;
   }
 }
 
@@ -121,58 +132,40 @@
   body {
     @apply bg-background text-foreground font-sans antialiased;
     font-family: 'Geist Sans', system-ui, sans-serif;
+    /* Improve text rendering */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Modern scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-muted-foreground/20 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted-foreground/40;
   }
 }
 
 @layer utilities {
   .glass {
-    @apply bg-background/80 backdrop-blur-xl border border-border/50;
+    @apply bg-white/70 backdrop-blur-lg border border-white/20 shadow-sm;
   }
 
-  .glow-cyan {
-    box-shadow: var(--gradient-glow-cyan);
+  .dark .glass {
+    @apply bg-black/70 border-white/10;
   }
 
-  .glow-mint {
-    box-shadow: var(--gradient-glow-mint);
-  }
-
-  .animate-glow {
-    animation: glow 2s ease-in-out infinite alternate;
-  }
-
-  .animate-float {
-    animation: float 3s ease-in-out infinite;
-  }
-
-  .animate-pulse-soft {
-    animation: pulse-soft 2s ease-in-out infinite;
-  }
-}
-
-@keyframes glow {
-  from {
-    box-shadow: 0 0 10px hsl(199 89% 48% / 0.2), 0 0 20px hsl(199 89% 48% / 0.1);
-  }
-  to {
-    box-shadow: 0 0 20px hsl(199 89% 48% / 0.4), 0 0 40px hsl(199 89% 48% / 0.2);
-  }
-}
-
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-4px);
-  }
-}
-
-@keyframes pulse-soft {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.7;
+  .text-balance {
+    text-wrap: balance;
   }
 }

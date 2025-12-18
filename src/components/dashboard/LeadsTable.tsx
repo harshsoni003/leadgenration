@@ -17,8 +17,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import leadDataJson from "@/lib/leaddata.json";
 
-interface Lead {
+export interface Lead {
   id: number;
   name: string;
   title: string;
@@ -30,76 +31,81 @@ interface Lead {
   eventSignals: string[];
   status: "Pending Review" | "Approved" | "Rejected";
   avatar?: string;
+  profileUrl?: string;
+  salesNavigatorUrl?: string;
 }
 
-const mockLeads: Lead[] = [
-  {
-    id: 1,
-    name: "Nate C.",
-    title: "CEO",
-    company: "TechVentures Inc",
-    companySize: "51-200",
-    location: "Philadelphia, PA",
-    totalScore: 95,
-    followers: "12k",
-    eventSignals: ["Conference", "Keynote"],
-    status: "Pending Review",
-  },
-  {
-    id: 2,
-    name: "Sarah M.",
-    title: "Founder",
-    company: "FinTech Solutions",
+interface LinkedInLead {
+  companyIndustry: string;
+  companyLocation: string;
+  companyName: string;
+  connectionType: string;
+  firstName: string;
+  id: string;
+  jobTitle: string;
+  lastName: string;
+  location: string;
+  openLink: string;
+  pendingInvitation: string;
+  premium: string;
+  profileId: string;
+  profilePictureUrl: string;
+  profileUrl: string;
+  salesNavigatorUrl: string;
+  saved: string;
+  viewed: string;
+}
+
+// Convert all JSON data to Lead format
+const allLeads: Lead[] = (leadDataJson as LinkedInLead[]).map((itm, index) => {
+  const fullName = `${itm.firstName} ${itm.lastName}`;
+  const score = Math.floor(Math.random() * 30) + 70;
+
+  // Assign status deterministically or randomly
+  const statuses: Lead["status"][] = ["Pending Review", "Approved", "Rejected"];
+  const status = statuses[index % 3];
+
+  return {
+    id: parseInt(itm.id) || index,
+    name: fullName,
+    title: itm.jobTitle,
+    company: itm.companyName,
     companySize: "11-50",
-    location: "New York, NY",
-    totalScore: 88,
-    followers: "8.5k",
-    eventSignals: ["Summit", "Speaker"],
-    status: "Approved",
-  },
-  {
-    id: 3,
-    name: "Andrew L.",
-    title: "CEO",
-    company: "Growth Partners",
-    companySize: "201-500",
-    location: "Chicago, IL",
-    totalScore: 94,
-    followers: "15k",
-    eventSignals: ["Retreat"],
-    status: "Pending Review",
-  },
-  {
-    id: 4,
-    name: "Michelle K.",
-    title: "Managing Director",
-    company: "Apex Consulting",
-    companySize: "51-200",
-    location: "Boston, MA",
-    totalScore: 82,
-    followers: "6k",
-    eventSignals: ["Conference"],
-    status: "Approved",
-  },
-  {
-    id: 5,
-    name: "David R.",
-    title: "Founder & CEO",
-    company: "DataDriven Co",
-    companySize: "11-50",
-    location: "Austin, TX",
-    totalScore: 76,
-    followers: "4.2k",
-    eventSignals: [],
-    status: "Rejected",
-  },
-];
+    location: itm.location || itm.companyLocation,
+    totalScore: score,
+    followers: "2.5k", // Placeholder
+    eventSignals: itm.companyIndustry ? [itm.companyIndustry] : [],
+    status: status,
+    avatar: itm.profilePictureUrl,
+    profileUrl: itm.profileUrl,
+    salesNavigatorUrl: itm.salesNavigatorUrl
+  };
+});
+
+// Add our manual lead at the top if desired, or just use the JSON data.
+// Since the user asked for "show all user from leaddata.json", ensuring the JSON data is primary.
+// We can prepend the "Pratik Kadam" lead if we want to keep it as a demo.
+const pratikLead: Lead = {
+  id: 99999999, // Distinct ID
+  name: "Pratik Kadam",
+  title: "Founder & CEO",
+  company: "Custom AI Studio",
+  companySize: "11-50",
+  location: "Mumbai, Maharashtra, India",
+  totalScore: 98,
+  followers: "2.6k",
+  eventSignals: ["AI Summit", "Tech Conference"],
+  status: "Pending Review",
+  avatar: "/assets/pratik-profile.jpg",
+};
+
+const leadsData = [pratikLead, ...allLeads];
 
 const getScoreColor = (score: number) => {
-  if (score >= 90) return "text-success bg-success/10";
-  if (score >= 80) return "text-primary bg-primary/10";
-  if (score >= 70) return "text-warning bg-warning/10";
-  return "text-muted-foreground bg-muted";
+  if (score >= 90) return "text-foreground font-bold";
+  if (score >= 80) return "text-foreground font-semibold";
+  if (score >= 70) return "text-muted-foreground";
+  return "text-muted-foreground opacity-70";
 };
 
 const getStatusVariant = (status: Lead["status"]) => {
@@ -109,7 +115,7 @@ const getStatusVariant = (status: Lead["status"]) => {
     case "Pending Review":
       return "secondary";
     case "Rejected":
-      return "destructive";
+      return "outline";
     default:
       return "secondary";
   }
@@ -123,13 +129,13 @@ const LeadsTable = ({ onSelectLead }: LeadsTableProps) => {
   const [hoveredRow, setHoveredRow] = useState<number | null>(null);
 
   return (
-    <div className="rounded-xl border bg-card overflow-hidden opacity-0 animate-fade-in" style={{ animationDelay: "300ms" }}>
-      <div className="p-4 border-b bg-secondary/30">
+    <div className="rounded-xl border bg-card overflow-hidden opacity-0 animate-fade-in shadow-none flex flex-col h-[600px]" style={{ animationDelay: "300ms" }}>
+      <div className="p-4 border-b border-border flex-none">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="font-semibold text-foreground">Lead Pipeline</h3>
             <p className="text-sm text-muted-foreground">
-              {mockLeads.length} leads matching your criteria
+              {leadsData.length} leads matching your criteria
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -145,100 +151,112 @@ const LeadsTable = ({ onSelectLead }: LeadsTableProps) => {
         </div>
       </div>
 
-      <Table>
-        <TableHeader>
-          <TableRow className="bg-muted/30 hover:bg-muted/30">
-            <TableHead className="font-semibold">Name</TableHead>
-            <TableHead className="font-semibold">Title</TableHead>
-            <TableHead className="font-semibold">Company Size</TableHead>
-            <TableHead className="font-semibold">Location</TableHead>
-            <TableHead className="font-semibold text-center">Score</TableHead>
-            <TableHead className="font-semibold">Followers</TableHead>
-            <TableHead className="font-semibold">Event Signals</TableHead>
-            <TableHead className="font-semibold">Status</TableHead>
-            <TableHead className="w-10"></TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {mockLeads.map((lead) => (
-            <TableRow
-              key={lead.id}
-              className={cn(
-                "cursor-pointer transition-all duration-200",
-                hoveredRow === lead.id && "bg-secondary/50 shadow-md -translate-y-px"
-              )}
-              onMouseEnter={() => setHoveredRow(lead.id)}
-              onMouseLeave={() => setHoveredRow(null)}
-              onClick={() => onSelectLead(lead)}
-            >
-              <TableCell>
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-primary-foreground text-sm font-medium">
-                    {lead.name.charAt(0)}
-                  </div>
-                  <span className="font-medium">{lead.name}</span>
-                </div>
-              </TableCell>
-              <TableCell className="text-muted-foreground">{lead.title}</TableCell>
-              <TableCell className="text-muted-foreground">{lead.companySize}</TableCell>
-              <TableCell className="text-muted-foreground">{lead.location}</TableCell>
-              <TableCell>
-                <div className="flex justify-center">
-                  <span
-                    className={cn(
-                      "inline-flex items-center justify-center w-10 h-10 rounded-full font-semibold text-sm",
-                      getScoreColor(lead.totalScore)
-                    )}
-                  >
-                    {lead.totalScore}
-                  </span>
-                </div>
-              </TableCell>
-              <TableCell className="text-muted-foreground">{lead.followers}</TableCell>
-              <TableCell>
-                <div className="flex items-center gap-1.5 flex-wrap">
-                  {lead.eventSignals.length > 0 ? (
-                    lead.eventSignals.map((signal, idx) => (
-                      <Badge
-                        key={idx}
-                        variant="outline"
-                        className="bg-primary/5 text-primary border-primary/20 text-xs"
-                      >
-                        <Bell className="w-3 h-3 mr-1" />
-                        {signal}
-                      </Badge>
-                    ))
-                  ) : (
-                    <span className="text-muted-foreground text-sm">—</span>
-                  )}
-                </div>
-              </TableCell>
-              <TableCell>
-                <Badge variant={getStatusVariant(lead.status)}>
-                  {lead.status}
-                </Badge>
-              </TableCell>
-              <TableCell>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-8 w-8">
-                      <MoreHorizontal className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem>View Profile</DropdownMenuItem>
-                    <DropdownMenuItem>Draft Message</DropdownMenuItem>
-                    <DropdownMenuItem>Add to List</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </TableCell>
+      <div className="flex-1 overflow-y-auto min-h-0">
+        <Table>
+          <TableHeader className="sticky top-0 bg-card z-10 shadow-sm">
+            <TableRow className="hover:bg-transparent border-b border-border">
+              <TableHead className="font-semibold text-muted-foreground">Name</TableHead>
+              <TableHead className="font-semibold text-muted-foreground">Title</TableHead>
+              <TableHead className="font-semibold text-muted-foreground">Company Size</TableHead>
+              <TableHead className="font-semibold text-muted-foreground">Location</TableHead>
+              <TableHead className="font-semibold text-center text-muted-foreground">Score</TableHead>
+              <TableHead className="font-semibold text-muted-foreground">Followers</TableHead>
+              <TableHead className="font-semibold text-muted-foreground">Event Signals</TableHead>
+              <TableHead className="font-semibold text-muted-foreground">Status</TableHead>
+              <TableHead className="w-10"></TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {leadsData.map((lead) => (
+              <TableRow
+                key={lead.id}
+                className={cn(
+                  "cursor-pointer transition-colors duration-200 border-b border-border",
+                  hoveredRow === lead.id && "bg-secondary/40"
+                )}
+                onMouseEnter={() => setHoveredRow(lead.id)}
+                onMouseLeave={() => setHoveredRow(null)}
+                onClick={() => onSelectLead(lead)}
+              >
+                <TableCell>
+                  <div className="flex items-center gap-3">
+                    {lead.avatar ? (
+                      <img
+                        src={lead.avatar}
+                        alt={lead.name}
+                        className="w-8 h-8 rounded-full object-cover border border-border"
+                      />
+                    ) : (
+                      <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-foreground text-sm font-medium border border-border">
+                        {lead.name.charAt(0)}
+                      </div>
+                    )}
+                    <span className="font-medium text-foreground">{lead.name}</span>
+                  </div>
+                </TableCell>
+                <TableCell className="text-muted-foreground">{lead.title}</TableCell>
+                <TableCell className="text-muted-foreground">{lead.companySize}</TableCell>
+                <TableCell className="text-muted-foreground">
+                  <span className="truncate max-w-[150px] block" title={lead.location}>{lead.location}</span>
+                </TableCell>
+                <TableCell>
+                  <div className="flex justify-center">
+                    <span
+                      className={cn(
+                        "inline-flex items-center justify-center w-10 h-10 rounded-full text-sm",
+                        getScoreColor(lead.totalScore)
+                      )}
+                    >
+                      {lead.totalScore}
+                    </span>
+                  </div>
+                </TableCell>
+                <TableCell className="text-muted-foreground">{lead.followers}</TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    {lead.eventSignals.length > 0 ? (
+                      lead.eventSignals.map((signal, idx) => (
+                        <Badge
+                          key={idx}
+                          variant="secondary"
+                          className="bg-secondary text-foreground border-transparent text-xs font-normal whitespace-nowrap"
+                        >
+                          <Bell className="w-3 h-3 mr-1 opacity-70" />
+                          {signal}
+                        </Badge>
+                      ))
+                    ) : (
+                      <span className="text-muted-foreground text-sm">—</span>
+                    )}
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <Badge variant={getStatusVariant(lead.status)} className="font-normal whitespace-nowrap">
+                    {lead.status}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground">
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem>View Profile</DropdownMenuItem>
+                      <DropdownMenuItem>Draft Message</DropdownMenuItem>
+                      <DropdownMenuItem>Add to List</DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 };
 
 export default LeadsTable;
-export type { Lead };
+

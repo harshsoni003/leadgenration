@@ -66,26 +66,16 @@ const getActivityIcon = (type: Activity["type"]) => {
 };
 
 const getActivityStyles = (type: Activity["type"]) => {
-  switch (type) {
-    case "signal":
-      return "bg-primary/10 text-primary";
-    case "approved":
-      return "bg-success/10 text-success";
-    case "generated":
-      return "bg-accent/10 text-accent";
-    default:
-      return "bg-secondary text-muted-foreground";
-  }
+  return "bg-secondary text-foreground border border-border";
 };
 
 const ActivityFeed = () => {
   return (
-    <div className="rounded-xl border bg-card p-4 opacity-0 animate-fade-in h-fit" style={{ animationDelay: "400ms" }}>
+    <div className="rounded-xl border bg-card p-4 opacity-0 animate-fade-in h-fit shadow-none" style={{ animationDelay: "400ms" }}>
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-semibold text-foreground">Live Activity</h3>
         <span className="relative flex h-2 w-2">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75"></span>
-          <span className="relative inline-flex rounded-full h-2 w-2 bg-success"></span>
+          <span className="relative inline-flex rounded-full h-2 w-2 bg-foreground"></span>
         </span>
       </div>
 
@@ -95,12 +85,12 @@ const ActivityFeed = () => {
             key={activity.id}
             className={cn(
               "flex items-start gap-3 p-3 rounded-lg transition-all duration-200",
-              "hover:bg-secondary/50 cursor-pointer",
+              "hover:bg-secondary/50 cursor-pointer border border-transparent hover:border-border/50",
               "opacity-0 animate-fade-in"
             )}
             style={{ animationDelay: `${500 + index * 100}ms` }}
           >
-            <div className={cn("p-2 rounded-lg shrink-0", getActivityStyles(activity.type))}>
+            <div className={cn("p-2 rounded-lg shrink-0 bg-secondary text-foreground")}>
               {getActivityIcon(activity.type)}
             </div>
             <div className="min-w-0 flex-1">
@@ -111,7 +101,7 @@ const ActivityFeed = () => {
         ))}
       </div>
 
-      <button className="w-full mt-4 py-2 text-sm text-primary hover:text-primary/80 transition-colors">
+      <button className="w-full mt-4 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors border-t border-border pt-4">
         View all activity →
       </button>
     </div>

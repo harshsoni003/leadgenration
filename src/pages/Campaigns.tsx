@@ -132,15 +132,14 @@ export default function Campaigns() {
               <Megaphone className="w-4 h-4" />
               Active Campaigns
             </h3>
-            
+
             {campaigns.map((campaign) => (
               <Card
                 key={campaign.id}
-                className={`cursor-pointer transition-all duration-200 ${
-                  selectedCampaign.id === campaign.id
+                className={`cursor-pointer transition-all duration-200 ${selectedCampaign.id === campaign.id
                     ? "border-primary shadow-glow"
                     : "hover:border-muted-foreground/30"
-                }`}
+                  }`}
                 onClick={() => setSelectedCampaign(campaign)}
               >
                 <CardContent className="p-4">
@@ -163,7 +162,7 @@ export default function Campaigns() {
                       )}
                     </Badge>
                   </div>
-                  
+
                   <div className="grid grid-cols-4 gap-2 text-center">
                     <div>
                       <p className="text-lg font-semibold text-foreground">{campaign.leads}</p>
@@ -295,7 +294,7 @@ export default function Campaigns() {
                       onCheckedChange={setEventSignalsEnabled}
                     />
                   </div>
-                  
+
                   {eventSignalsEnabled && (
                     <div className="p-4 rounded-lg bg-muted/50 border">
                       <p className="text-sm text-muted-foreground mb-3">
