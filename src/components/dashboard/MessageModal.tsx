@@ -6,15 +6,12 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import type { Lead } from "./LeadsTable";
-import ayushProfileImg from "@/assets/ayush-profile.png";
 
 interface MessageModalProps {
   lead: Lead | null;
@@ -207,27 +204,13 @@ const MessageModal = ({ lead, open, onClose }: MessageModalProps) => {
                   {lead.eventSignals.map((signal, idx) => (
                     <Badge
                       key={idx}
-                      variant="secondary"
-                      className="bg-emerald-100 text-emerald-700 border-emerald-200"
+                      variant="outline"
+                      className="bg-accent/10 text-accent border-accent/20"
                     >
                       {signal}
                     </Badge>
                   ))}
                 </div>
-              </div>
-            )}
-
-            {/* Show Ayush's profile image */}
-            {lead.name === "Ayush Aryan Sinha" && (
-              <div className="p-4 rounded-xl bg-secondary/50 border border-border/50">
-                <h4 className="text-sm font-semibold text-foreground mb-2">LinkedIn Profile</h4>
-                <ScrollArea className="h-[300px] rounded-lg border border-border">
-                  <img 
-                    src={ayushProfileImg} 
-                    alt="Ayush Aryan Sinha LinkedIn Profile"
-                    className="w-full object-contain"
-                  />
-                </ScrollArea>
               </div>
             )}
           </div>
