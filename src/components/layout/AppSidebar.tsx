@@ -1,4 +1,4 @@
-import { LayoutGrid, MessageSquare, BarChart2 } from "lucide-react";
+import { LayoutGrid, MessageSquare, BarChart2, User } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
@@ -45,8 +45,8 @@ export default function AppSidebar() {
 
       {/* Bottom Actions (Placeholder) */}
       <div className="mt-auto flex flex-col gap-4 pb-4">
-        <button className="w-10 h-10 flex items-center justify-center text-muted-foreground hover:text-foreground">
-          <MessageSquare className="w-5 h-5" />
+        <button className="w-10 h-10 flex items-center justify-center text-muted-foreground hover:text-foreground rounded-full hover:bg-secondary/50 transition-all duration-200">
+          <User className="w-5 h-5" />
         </button>
       </div>
     </aside>
