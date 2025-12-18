@@ -13,6 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import LeadProfileModal from "@/components/dashboard/LeadProfileModal";
+import MessageModal from "@/components/dashboard/MessageModal";
 import leadDataJson from "@/lib/leaddata.json";
 import type { Lead } from "@/components/dashboard/LeadsTable";
 
@@ -102,12 +103,17 @@ const getStatusBadge = (status: MessageItem["messageStatus"]) => {
   }
 };
 
-const getActionButtons = (status: MessageItem["messageStatus"]) => {
+const getActionButtons = (status: MessageItem["messageStatus"], lead: Lead, onEditClick: (lead: Lead, e: React.MouseEvent) => void) => {
   switch (status) {
     case "Draft":
       return (
         <div className="flex items-center gap-1">
-          <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="h-8 w-8 text-muted-foreground hover:text-foreground"
+            onClick={(e) => onEditClick(lead, e)}
+          >
             <PenLine className="w-4 h-4" />
           </Button>
           <Button variant="ghost" size="icon" className="h-8 w-8 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50">
@@ -135,6 +141,14 @@ export default function Messages() {
   const [activeTab, setActiveTab] = useState("All");
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [messageModalLead, setMessageModalLead] = useState<Lead | null>(null);
+  const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
+
+  const handleEditClick = (lead: Lead, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setMessageModalLead(lead);
+    setIsMessageModalOpen(true);
+  };
 
   const filteredMessages = activeTab === "All"
     ? messageItems
@@ -239,7 +253,7 @@ export default function Messages() {
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end" onClick={(e) => e.stopPropagation()}>
-                      {getActionButtons(item.messageStatus)}
+                      {getActionButtons(item.messageStatus, item.lead, handleEditClick)}
                     </div>
                   </TableCell>
                 </TableRow>
@@ -253,6 +267,12 @@ export default function Messages() {
         lead={selectedLead}
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}
+      />
+
+      <MessageModal
+        lead={messageModalLead}
+        open={isMessageModalOpen}
+        onClose={() => setIsMessageModalOpen(false)}
       />
     </div>
   );
