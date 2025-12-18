@@ -17,6 +17,7 @@ import MessageModal from "@/components/dashboard/MessageModal";
 import AyushProfileModal from "@/components/dashboard/AyushProfileModal";
 import leadDataJson from "@/lib/leaddata.json";
 import type { Lead } from "@/components/dashboard/LeadsTable";
+import ayushAvatar from "@/assets/ayush-avatar.jpg";
 
 // Data structure for the Messages page
 interface MessageItem {
@@ -96,7 +97,7 @@ const ayushLead: MessageItem = {
     followers: "5.2k",
     eventSignals: ["AI Summit 2024", "Tech Conference"],
     status: "Pending Review",
-    avatar: undefined,
+    avatar: ayushAvatar,
     profileUrl: "https://linkedin.com/in/ayusharyan",
     salesNavigatorUrl: "",
     email: "ayush@dyotaai.com",
