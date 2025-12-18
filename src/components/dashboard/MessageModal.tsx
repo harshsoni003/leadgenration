@@ -204,8 +204,8 @@ const MessageModal = ({ lead, open, onClose }: MessageModalProps) => {
                   {lead.eventSignals.map((signal, idx) => (
                     <Badge
                       key={idx}
-                      variant="outline"
-                      className="bg-accent/10 text-accent border-accent/20"
+                      variant="secondary"
+                      className="bg-emerald-100 text-emerald-700 border-emerald-200"
                     >
                       {signal}
                     </Badge>

@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/table";
 import LeadProfileModal from "@/components/dashboard/LeadProfileModal";
 import MessageModal from "@/components/dashboard/MessageModal";
+import AyushProfileModal from "@/components/dashboard/AyushProfileModal";
 import leadDataJson from "@/lib/leaddata.json";
 import type { Lead } from "@/components/dashboard/LeadsTable";
 
@@ -169,6 +170,7 @@ export default function Messages() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [messageModalLead, setMessageModalLead] = useState<Lead | null>(null);
   const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
+  const [isAyushModalOpen, setIsAyushModalOpen] = useState(false);
 
   const handleEditClick = (lead: Lead, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -186,8 +188,13 @@ export default function Messages() {
     });
 
   const handleRowClick = (lead: Lead) => {
-    setSelectedLead(lead);
-    setIsModalOpen(true);
+    // Check if it's Ayush
+    if (lead.name === "Ayush Aryan Sinha") {
+      setIsAyushModalOpen(true);
+    } else {
+      setSelectedLead(lead);
+      setIsModalOpen(true);
+    }
   };
 
   return (
@@ -299,6 +306,11 @@ export default function Messages() {
         lead={messageModalLead}
         open={isMessageModalOpen}
         onClose={() => setIsMessageModalOpen(false)}
+      />
+
+      <AyushProfileModal
+        open={isAyushModalOpen}
+        onClose={() => setIsAyushModalOpen(false)}
       />
     </div>
   );
