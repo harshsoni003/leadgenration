@@ -33,6 +33,7 @@ export interface Lead {
   avatar?: string;
   profileUrl?: string;
   salesNavigatorUrl?: string;
+  email?: string;
 }
 
 interface LinkedInLead {

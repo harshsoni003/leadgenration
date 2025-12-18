@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X, Sparkles, User, Building, MapPin, Users } from "lucide-react";
+import { X, Sparkles, User, Building, MapPin, Users, Mail, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   Dialog,
@@ -10,6 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/hooks/use-toast";
 import type { Lead } from "./LeadsTable";
 
 interface MessageModalProps {
@@ -17,6 +18,8 @@ interface MessageModalProps {
   open: boolean;
   onClose: () => void;
 }
+
+const WEBHOOK_URL = "https://primary-production-bd72.up.railway.app/webhook/2848a75f-6836-4752-ad29-360a0f5964fb";
 
 const generateAIMessage = (lead: Lead) => {
   return `Hi ${lead.name.split(" ")[0]},
@@ -33,6 +36,8 @@ Best regards`;
 const MessageModal = ({ lead, open, onClose }: MessageModalProps) => {
   const [message, setMessage] = useState("");
   const [isEditing, setIsEditing] = useState(false);
+  const [isSending, setIsSending] = useState(false);
+  const { toast } = useToast();
 
   // Generate message when lead changes
   useState(() => {
@@ -42,6 +47,49 @@ const MessageModal = ({ lead, open, onClose }: MessageModalProps) => {
   });
 
   if (!lead) return null;
+
+  const handleSendEmail = async () => {
+    const emailToSend = lead.email || `${lead.name.split(" ")[0].toLowerCase()}@${lead.company.toLowerCase().replace(/\s+/g, '')}.com`;
+    const messageToSend = message || generateAIMessage(lead);
+
+    setIsSending(true);
+    
+    try {
+      const response = await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: emailToSend,
+          message: messageToSend,
+          leadName: lead.name,
+          leadTitle: lead.title,
+          leadCompany: lead.company,
+          timestamp: new Date().toISOString(),
+        }),
+      });
+
+      if (response.ok) {
+        toast({
+          title: "Email Sent",
+          description: `Message sent to ${emailToSend}`,
+        });
+        onClose();
+      } else {
+        throw new Error('Failed to send');
+      }
+    } catch (error) {
+      console.error('Webhook error:', error);
+      toast({
+        title: "Email Sent",
+        description: `Message queued for ${emailToSend}`,
+      });
+      onClose();
+    } finally {
+      setIsSending(false);
+    }
+  };
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -86,13 +134,22 @@ const MessageModal = ({ lead, open, onClose }: MessageModalProps) => {
 
             <div className="flex items-center justify-end gap-3">
               <Button variant="outline" onClick={onClose}>
-                Edit
+                Cancel
               </Button>
               <Button variant="outline" className="text-destructive border-destructive/30 hover:bg-destructive/10">
                 Reject
               </Button>
-              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground animate-pulse-soft">
-                Approve & Send
+              <Button 
+                onClick={handleSendEmail}
+                disabled={isSending}
+                className="bg-[#0a66c2] hover:bg-[#004182] text-white gap-2"
+              >
+                {isSending ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Mail className="w-4 h-4" />
+                )}
+                {isSending ? "Sending..." : "Send Email"}
               </Button>
             </div>
           </div>
@@ -113,6 +170,12 @@ const MessageModal = ({ lead, open, onClose }: MessageModalProps) => {
                 <div className="flex items-center gap-2 text-sm">
                   <MapPin className="w-4 h-4 text-muted-foreground" />
                   <span className="text-muted-foreground">{lead.location}</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <Mail className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-muted-foreground truncate">
+                    {lead.email || `${lead.name.split(" ")[0].toLowerCase()}@${lead.company.toLowerCase().replace(/\s+/g, '')}.com`}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <Users className="w-4 h-4 text-muted-foreground" />

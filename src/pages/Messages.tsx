@@ -72,6 +72,7 @@ function convertToMessageItem(linkedInLead: LinkedInLead, index: number): Messag
     avatar: linkedInLead.profilePictureUrl || undefined,
     profileUrl: linkedInLead.profileUrl,
     salesNavigatorUrl: linkedInLead.salesNavigatorUrl,
+    email: `${linkedInLead.firstName.toLowerCase()}@${linkedInLead.companyName.toLowerCase().replace(/\s+/g, '')}.com`,
   };
 
   return {
@@ -81,10 +82,35 @@ function convertToMessageItem(linkedInLead: LinkedInLead, index: number): Messag
   };
 }
 
+// Custom lead for Ayush Aryan Sinha
+const ayushLead: MessageItem = {
+  lead: {
+    id: 9999,
+    name: "Ayush Aryan Sinha",
+    title: "Founder & CEO",
+    company: "Dyota AI",
+    companySize: "11-50",
+    location: "India",
+    totalScore: 95,
+    followers: "5.2k",
+    eventSignals: ["AI Summit 2024", "Tech Conference"],
+    status: "Pending Review",
+    avatar: undefined,
+    profileUrl: "https://linkedin.com/in/ayusharyan",
+    salesNavigatorUrl: "",
+    email: "ayush@dyotaai.com",
+  },
+  messageStatus: "Draft",
+  messagePreview: "Hi Ayush, I noticed your impressive work at Dyota AI - the innovations in AI are truly remarkable! As a leader...",
+};
+
 // Generate data from JSON
-const messageItems: MessageItem[] = (leadDataJson as LinkedInLead[])
-  .slice(0, 50) // Load 50 items
-  .map((item, index) => convertToMessageItem(item, index));
+const messageItems: MessageItem[] = [
+  ayushLead,
+  ...(leadDataJson as LinkedInLead[])
+    .slice(0, 49) // Load 49 items + Ayush = 50
+    .map((item, index) => convertToMessageItem(item, index + 1))
+];
 
 const getStatusBadge = (status: MessageItem["messageStatus"]) => {
   switch (status) {
