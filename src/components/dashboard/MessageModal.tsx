@@ -132,17 +132,14 @@ const MessageModal = ({ lead, open, onClose }: MessageModalProps) => {
               )}
             </div>
 
-            <div className="flex items-center justify-end gap-3">
-              <Button variant="outline" onClick={onClose}>
+            <div className="flex items-center justify-end gap-3 pt-2 border-t border-border/50">
+              <Button variant="outline" onClick={onClose} className="px-6">
                 Cancel
-              </Button>
-              <Button variant="outline" className="text-destructive border-destructive/30 hover:bg-destructive/10">
-                Reject
               </Button>
               <Button 
                 onClick={handleSendEmail}
                 disabled={isSending}
-                className="bg-[#0a66c2] hover:bg-[#004182] text-white gap-2"
+                className="bg-[#0a66c2] hover:bg-[#004182] text-white gap-2 px-6"
               >
                 {isSending ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
@@ -179,7 +176,7 @@ const MessageModal = ({ lead, open, onClose }: MessageModalProps) => {
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <Users className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-muted-foreground">{lead.followers} Followers</span>
+                  <span className="text-muted-foreground">1.2k Followers</span>
                 </div>
               </div>
             </div>
